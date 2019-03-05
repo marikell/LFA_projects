@@ -86,16 +86,46 @@ namespace LFA_Project1
                 string word = strBuilder.ToString();
                 strBuilder = new StringBuilder();
 
-                var splited = Validate(word, wba,word.Split(wba, StringSplitOptions.RemoveEmptyEntries)).ToArray();
+                int indexWba = word.IndexOf(wba);
 
-                for(int i = 0; i<splited.Length; i++)
+                string builder = string.Empty;
+
+                List<string> arrays = new List<string>();
+
+                for(int i = 0; i < word.Length; i++)
                 {
-                    if(splited[i].Equals(wba))
+                    if(indexWba == i)
                     {
-                        splited[i] = waa;
+                        string beforeFoundWord = (i == 0) ? string.Empty : word.Substring(0, i);
+                        if(!string.IsNullOrEmpty(beforeFoundWord))
+                        {
+                            arrays.Add(beforeFoundWord);
+                        }
+                        arrays.Add(wba);                                   
+                        builder = string.Empty;             
+                        i += wba.Length - 1;
+                    }
+                    else
+                    {
+                        builder += word[i];
                     }
                 }
-                strBuilder = new StringBuilder(string.Join("", splited));               
+
+                if(!string.IsNullOrEmpty(builder))
+                {
+                    arrays.Add(builder);    
+                }
+                
+
+                for(int i = 0; i<arrays.Count; i++)
+                {
+                    if(arrays[i].Equals(wba))
+                    {
+                        arrays[i] = waa;
+                    }
+                }
+
+                strBuilder = new StringBuilder(string.Join("", arrays));               
             }
 
             return strBuilder.ToString();
@@ -104,35 +134,6 @@ namespace LFA_Project1
 
         #endregion
 
-        public ICollection<string> Validate(string word, string wba,string[] wrds)
-        {
-            List<string> lst = new List<string>();
-
-            string w = string.Empty;
-
-            foreach(char c in word)
-            {             
-                w += c;
-
-                if(w.Equals(wba))
-                {
-                    lst.Add(w);
-                    w = string.Empty;
-                    continue;
-                }
-
-                foreach(string wrd in wrds)
-                {
-                    if(w.Equals(wrd))
-                    {
-                        lst.Add(w);
-                        w = string.Empty;
-                    }                  
-                }
-            }
-            
-            return lst;
-        }
 
     }
 }
