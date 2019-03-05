@@ -21,6 +21,8 @@ namespace LFA_project1
             derivation.Init(ba,aa,steps,variables,initial);
             
             string s = derivation.Derive();
-        }
+
+            Console.WriteLine(s);
+             }
     }
 }
