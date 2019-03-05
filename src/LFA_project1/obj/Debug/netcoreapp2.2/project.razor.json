@@ -1,0 +1,14 @@
+{
+  "ProjectFilePath": "c:\\projects\\LFA_Project1\\src\\LFA_project1\\LFA_project1.csproj",
+  "TargetFramework": "netcoreapp2.2",
+  "TagHelpers": [],
+  "Configuration": {
+    "ConfigurationName": "UnsupportedRazor",
+    "LanguageVersion": "1.0",
+    "Extensions": [
+      {
+        "ExtensionName": "UnsupportedRazorExtension"
+      }
+    ]
+  }
+}
