@@ -20,8 +20,28 @@ namespace LFA_project1.Tests
         public void Derive(string[] ba, string[] aa, string InitialWord, int[] steps, string[] variables, string expectedResult)
         {
             Derivator derivator = new Derivator(new Derivation(ba, aa, steps, variables, InitialWord));
-
             Assert.Equal(expectedResult, derivator.Derive());
+
+            var generatedSteps = derivator.GetStepsByWord(expectedResult).ToArray();
+
+            Derivator derivator2 = new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord));
+            Assert.Equal(expectedResult, derivator2.Derive());
+        }
+
+        [Theory()]
+        [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
+        new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
+        "S",
+        new int[] { 1 },
+        new string[] { "a", "b" },
+        "abab")]
+        public void Derive2(string[] ba, string[] aa, string InitialWord, int[] steps, string[] variables, string expectedResult)
+        {
+            Derivator derivator = new Derivator(new Derivation(ba, aa, steps, variables, InitialWord));
+            var generatedSteps = derivator.GetStepsByWord(expectedResult).ToArray();
+
+            Derivator derivator2 = new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord));
+            Assert.Equal(expectedResult, derivator2.Derive());
         }
 
         [Theory()]
