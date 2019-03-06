@@ -4,10 +4,10 @@ namespace LFA_Project1.Validation
 {
     public static class Validator
     {
-        public static bool ValidateUserInput(string initialWord, string[] variables, string productionRules, int[] steps)
+        public static bool ValidateUserInput(string initialWord, string[] variables, string[] rulesBfa, string[] rulesAfa, int[] steps)
         {
-            return (!string.IsNullOrEmpty(initialWord) && variables.Length != 0 && steps.Length != 0 && productionRules.Length != 0
-                    && steps.Length <= productionRules.Split(",").Length);
+            return (!string.IsNullOrEmpty(initialWord) && variables.Length != 0 && steps.Length != 0 && rulesBfa.Length != 0
+                    && steps.Length <= rulesBfa.Length && rulesAfa.Length != 0);
         }
 
         public static bool ValidateGramma(string[] rulesBfA, string[] rulesAfA, string initialWord)

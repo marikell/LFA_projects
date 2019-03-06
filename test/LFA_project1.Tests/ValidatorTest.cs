@@ -14,22 +14,27 @@ namespace LFA_project1.Tests
         [Theory()]
         [InlineData("SA",
          new string[] { "x", "y" },
-         "",
+         new string[] { },
+         new string[] { },
         new int[] { 2, 5, 7, 3, 8, 10, 4, 12, 5, 13 },
         false)]
+
         [InlineData("KA",
          new string[] { "p", "k" },
-         "KA->Kp",
+         new string[] { "Ka" },
+         new string[] { "Kp" },
         new int[] { },
         false)]
+
         [InlineData("Pp",
-         new string[] { "x", "y" },
-         "SA->Kp",
+        new string[] { "x", "y" },
+        new string[] {"Ka" },
+        new string[] {"Kp" },
         new int[] { 1, 2 },
         false)]
-        public void ValidateUserInput(string initialWord, string[] variables, string productionRules, int[] steps, bool expectedResult)
+        public void ValidateUserInput(string initialWord, string[] variables, string[] rulesBfA, string[] rulesAfA, int[] steps, bool expectedResult)
         {
-            Assert.Equal(expectedResult, Validator.ValidateUserInput(initialWord, variables, productionRules, steps));
+            Assert.Equal(expectedResult, Validator.ValidateUserInput(initialWord, variables, rulesBfA, rulesAfA, steps));
         }
         #endregion
 

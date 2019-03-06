@@ -1,0 +1,49 @@
+{
+    "rulesBfA": [
+        "S",
+        "X",
+        "X",
+        "X",
+        "Aa",
+        "Ab",
+        "AY",
+        "Ba",
+        "Bb",
+        "BY",
+        "Fa",
+        "Fb",
+        "FY"
+    ],
+    "rulesAfA": [
+        "XY",
+        "XaA",
+        "XbB",
+        "F",
+        "aA",
+        "bA",
+        "Ya",
+        "aB",
+        "bB",
+        "Yb",
+        "aF",
+        "bF",
+        ""
+    ],
+    "initialWord": "S",
+    "steps": [
+        1,
+        2,
+        7,
+        3,
+        8,
+        10,
+        4,
+        12,
+        11,
+        13
+    ],
+    "variables": [
+        "a",
+        "b"
+    ]
+}
