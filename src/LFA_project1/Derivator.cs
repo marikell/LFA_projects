@@ -28,7 +28,14 @@ namespace LFA_Project1
                 var wba = _derivation.ProductionRules.ElementAt(step-1).Item1;
                 var waa = _derivation.ProductionRules.ElementAt(step-1).Item2;
 
-                strBuilder = new StringBuilder(Replace(wba, waa, strBuilder.ToString()));           
+                var word = strBuilder.ToString();
+                
+                if(!word.Contains(wba))
+                {
+                   throw new Exception(String.Format("Palavra {0} não encontrada na {1}", wba, word));          
+                }
+
+                strBuilder = new StringBuilder(Replace(wba, waa, word));           
             }            
             return strBuilder.ToString();
         }
