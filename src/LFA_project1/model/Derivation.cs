@@ -1,9 +1,8 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using LFA_Project1.Model;
+using System.Linq;
 
-namespace LFA_Project1.Model
+namespace LFA_project1.Model
 {
 
     public class Derivation : DerivationInput

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-using LFA_Project1.Model;
+using LFA_project1.Model;
 
-namespace LFA_Project1
+namespace LFA_project1
 {
     public class Derivator
     {
