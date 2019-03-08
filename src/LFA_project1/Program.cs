@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 using LFA_project1.Model;
 using LFA_project1.Validation;
-using Newtonsoft.Json;
 
 namespace LFA_project1
 {
@@ -46,8 +47,7 @@ namespace LFA_project1
                 Console.WriteLine(string.Format("Derivação: {0}", derivate));
 
                 List<int> steps = GetStepsByWord(derivation, derivate);
-                Console.WriteLine(string.Format("Passos para gerar a palavra {0}: {1}",
-                derivate, string.Join(",", steps)));
+                Console.WriteLine(string.Format("Passos para gerar a palavra {0}: {1}", derivate, string.Join(",", steps)));
 
                 derivation.Steps = steps;
                 Console.WriteLine(string.Format("Palavra gerada através dos passos gerados acima: {0}", DerivateProcess(derivation)));
