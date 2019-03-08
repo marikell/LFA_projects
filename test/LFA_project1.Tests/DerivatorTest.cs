@@ -17,12 +17,6 @@ namespace LFA_project1.Tests
         new int[] { 1, 2, 7, 3, 8, 10, 4, 12, 11, 13 },
         new string[] { "a", "b" },
         "baba")]
-        // [InlineData(new string[] { "S", "Y", "XY", "Z" },
-        // new string[] { "XYZ", "Yab", "", "cXY" },
-        // "S",
-        // new int[] { 1, 2, 3, 4, 3 },
-        // new string[] { "a", "b", "c" },
-        // "abc")]
         public void Derive(string[] ba, string[] aa, string InitialWord, int[] steps, string[] variables, string expectedResult)
         {
             Derivator derivator = new Derivator(new Derivation(ba, aa, steps, variables, InitialWord));
