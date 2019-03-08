@@ -15,9 +15,9 @@ namespace LFA_Project1
             _derivation = derivation;
         }
 
-        public static string Replace(string wba, string waa, string word, int start = 0)
+        public static string Replace(string stringToSearch, string stringToReplace, string word, int startIndex = 0)
         {
-            return (new Regex(Regex.Escape(wba)).Replace(word, waa, 1, start));
+            return (new Regex(Regex.Escape(stringToSearch)).Replace(word, stringToReplace, 1, startIndex));
         }
         public string Derive()
         {
@@ -41,7 +41,7 @@ namespace LFA_Project1
         }
 
         private List<int> steps(string word, int limit)
-        {   
+        {
 
             // condições de parada
             if (word.Length > limit)
@@ -59,12 +59,13 @@ namespace LFA_Project1
                 var from = _derivation.ProductionRules.ElementAt(y).Item1;
                 var to = _derivation.ProductionRules.ElementAt(y).Item2;
 
+                // Ignorar a primeira regra de derivação, pois só pode ser a primeira
                 if (from != _derivation.InitialWord)
                 {
 
                     // Para cada regra de derivação devemos procurar
                     // todas as possiveis ocorrencias da mesma
-                    for (var x = 0; x < word.Length; x++)
+                    for (var x = 0; x <= word.Length; x++)
                     {
 
                         var wordToList = Replace(to, from, word, x);
@@ -83,27 +84,6 @@ namespace LFA_Project1
                             }
                         }
 
-                    }
-
-                    // se uma regra derivar para uma palavra vazia, resta essa opção
-                    // que é adicionar no final
-                    if (to == "")
-                    {
-                        var wordToList = word + from;
-
-                        if (wordToList != word)
-                        {
-                            var r = steps(wordToList, limit);
-                            if (r == null)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                r.Add(y + 1);
-                                return r;
-                            }
-                        }
                     }
                 }
 
