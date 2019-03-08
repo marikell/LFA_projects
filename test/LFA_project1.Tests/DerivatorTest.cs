@@ -29,12 +29,12 @@ namespace LFA_project1.Tests
         new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
         "S",
         new string[] { "a", "b" },
+        "abab")]
+        [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
+        new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
+        "S",
+        new string[] { "a", "b" },
         "baba")]
-        // [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
-        // new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
-        // "S",
-        // new string[] { "a", "b" },
-        // "bababa")]
         public void GetWordsByStep(string[] ba, string[] aa, string InitialWord, string[] variables, string expectedResult)
         {
             Derivator derivator = new Derivator(new Derivation(ba, aa, null, variables, InitialWord));
