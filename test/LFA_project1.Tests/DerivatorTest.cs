@@ -34,14 +34,13 @@ namespace LFA_project1.Tests
         new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
         "S",
         new string[] { "a", "b" },
-        "baba")]
+        "babaa")]
         public void GetWordsByStep(string[] ba, string[] aa, string InitialWord, string[] variables, string expectedResult)
         {
-            Derivator derivator = new Derivator(new Derivation(ba, aa, null, variables, InitialWord));
-            var generatedSteps = derivator.GetStepsByWord(expectedResult).ToArray();
+            var generatedSteps = new Derivator(new Derivation(ba, aa, null, variables, InitialWord))
+                                .GetStepsByWord(expectedResult).ToArray();
 
-            Derivator derivator2 = new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord));
-            Assert.Equal(expectedResult, derivator2.Derive());
+            Assert.Equal(expectedResult, new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord)).Derive());
         }
 
         [Theory()]
