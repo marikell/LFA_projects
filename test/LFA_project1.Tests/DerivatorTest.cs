@@ -1,9 +1,5 @@
-using System;
-using LFA_Project1;
+using LFA_project1.Model;
 using Xunit;
-using System.Collections.Generic;
-using System.Linq;
-using LFA_Project1.Model;
 
 namespace LFA_project1.Tests
 {
@@ -20,9 +16,33 @@ namespace LFA_project1.Tests
         public void Derive(string[] ba, string[] aa, string InitialWord, int[] steps, string[] variables, string expectedResult)
         {
             Derivator derivator = new Derivator(new Derivation(ba, aa, steps, variables, InitialWord));
-
             Assert.Equal(expectedResult, derivator.Derive());
+
+            var generatedSteps = derivator.GetStepsByWord(expectedResult).ToArray();
+
+            Derivator derivator2 = new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord));
+            Assert.Equal(expectedResult, derivator2.Derive());
         }
+
+        // [Theory()]
+        // [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
+        // new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
+        // "S",
+        // new string[] { "a", "b" },
+        // "abab")]
+        // [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
+        // new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
+        // "S",
+        // new string[] { "a", "b" },
+        // "bababa")]
+        // public void GetWordsByStep(string[] ba, string[] aa, string InitialWord, string[] variables, string expectedResult)
+        // {
+        //     Derivator derivator = new Derivator(new Derivation(ba, aa, null, variables, InitialWord));
+        //     var generatedSteps = derivator.GetStepsByWord(expectedResult).ToArray();
+
+        //     Derivator derivator2 = new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord));
+        //     Assert.Equal(expectedResult, derivator2.Derive());
+        // }
 
         [Theory()]
         [InlineData("aa", "ff", "AaaBbaa", "AffBbaa")]
@@ -31,6 +51,18 @@ namespace LFA_project1.Tests
         {
             Assert.Equal(expectedResult, Derivator.Replace(wba, waa, word));
         }
+
+        [Theory()]
+        [InlineData("", "ZZZ", "tttt")]
+        public void ReplaceWithIndex(string wba, string waa, string word)
+        {
+            Assert.Equal("ZZZtttt", Derivator.Replace(wba, waa, word, 0));
+            Assert.Equal("tZZZttt", Derivator.Replace(wba, waa, word, 1));
+            Assert.Equal("ttZZZtt", Derivator.Replace(wba, waa, word, 2));
+            Assert.Equal("tttZZZt", Derivator.Replace(wba, waa, word, 3));
+            Assert.Equal("ttttZZZ", Derivator.Replace(wba, waa, word, 4));
+        }
+
 
     }
 }

@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
-namespace LFA_Project1.Validation
+namespace LFA_project1.Validation
 {
     public static class Validator
     {

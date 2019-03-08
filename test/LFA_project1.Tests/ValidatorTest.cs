@@ -1,9 +1,5 @@
-using System;
-using LFA_Project1;
+using LFA_project1.Validation;
 using Xunit;
-using System.Collections.Generic;
-using System.Linq;
-using LFA_Project1.Validation;
 
 namespace LFA_project1.Tests
 {
