@@ -13,34 +13,23 @@ namespace LFA_project1.Tests
         new int[] { 1, 2, 7, 3, 8, 10, 4, 12, 11, 13 },
         new string[] { "a", "b" },
         "baba")]
+        [InlineData(new string[] { "S", "X", "X", "X", "AaA", "AbA", "Ac", "Y", "T" },
+        new string[] { "XXXXX", "Aa", "Ab", "Ac", "Y", "T", "TT", "aa", "bb" },
+        "S",
+        new int[] { 1, 2, 2, 2, 2, 4, 5, 5, 7, 8, 8, 9, 9 },
+        new string[] { "a", "b", "c" },
+        "aaaaaabbbb")]
         public void Derive(string[] ba, string[] aa, string InitialWord, int[] steps, string[] variables, string expectedResult)
         {
             Derivator derivator = new Derivator(new Derivation(ba, aa, steps, variables, InitialWord));
-            Assert.Equal(expectedResult, derivator.Derive());
+            string result = derivator.Derive();
+
+            Assert.Equal(expectedResult, result);
 
             var generatedSteps = derivator.GetStepsByWord(expectedResult).ToArray();
 
             Derivator derivator2 = new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord));
             Assert.Equal(expectedResult, derivator2.Derive());
-        }
-
-        [Theory()]
-        [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
-        new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
-        "S",
-        new string[] { "a", "b" },
-        "abab")]
-        [InlineData(new string[] { "S", "X", "X", "X", "Aa", "Ab", "AY", "Ba", "Bb", "BY", "Fa", "Fb", "FY" },
-        new string[] { "XY", "XaA", "XbB", "F", "aA", "bA", "Ya", "aB", "bB", "Yb", "aF", "bF", "" },
-        "S",
-        new string[] { "a", "b" },
-        "babaa")]
-        public void GetWordsByStep(string[] ba, string[] aa, string InitialWord, string[] variables, string expectedResult)
-        {
-            var generatedSteps = new Derivator(new Derivation(ba, aa, null, variables, InitialWord))
-                                .GetStepsByWord(expectedResult).ToArray();
-
-            Assert.Equal(expectedResult, new Derivator(new Derivation(ba, aa, generatedSteps, variables, InitialWord)).Derive());
         }
 
         [Theory()]
