@@ -40,84 +40,30 @@ namespace LFA_project1
             return strBuilder.ToString();
         }
 
-        private List<int> stepsProfundidade(string word, int limit)
-        {
-            if (word.Length > limit)
-            {
-                return null;
-            }
-            else if (word == _derivation.RulesAfA.ElementAt(0))
-            {
-                return new List<int>() { 1 };
-            }
-
-            for (var y = 0; y < _derivation.ProductionRules.Count; y++)
-            {
-
-                var from = _derivation.ProductionRules.ElementAt(y).Item1;
-                var to = _derivation.ProductionRules.ElementAt(y).Item2;
-
-                // Ignorar a primeira regra de derivação, pois só pode ser a primeira
-                if (from != _derivation.InitialWord)
-                {
-
-                    // Para cada regra de derivação devemos procurar
-                    // todas as possiveis ocorrencias da mesma
-                    for (var x = 0; x <= word.Length; x++)
-                    {
-
-                        var wordToList = Replace(to, from, word, x);
-
-                        if (wordToList != word)
-                        {
-                            var r = stepsProfundidade(wordToList, limit);
-                            if (r == null)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                r.Add(y + 1);
-                                return r;
-                            }
-                        }
-
-                    }
-                }
-
-            }
-
-            return null;
-
-        }
-
-        private List<int> GetStepsUsingBFS(string word, int size)
+        private List<int> GetSteps(string word, int size)
         {
 
-            var list = new List<string>() { word };
-            var listS = new List<List<int>>() { new List<int>() };
 
-            // verificar lista
+            List<Word> list = new List<Word>() { new Word(_derivation.RulesAfA.ElementAt(0)) };
+
             while (list.Count > 0)
             {
 
-                if (list.Contains(_derivation.RulesAfA.ElementAt(0)))
-                {
-                    var index = list.IndexOf(_derivation.RulesAfA.ElementAt(0));
-                    var returnList = new List<int>(listS.ElementAt(index));
-                    
-                    returnList.Reverse();
-                    returnList.Insert(0, 1);
+                Word finalWord = list.FirstOrDefault(q => q.Text == word);
 
+                if (finalWord != null)
+                {
+
+                    List<int> returnList = finalWord.Steps;
                     return returnList;
                 }
 
-                var sliceSize = list.Count;
+                int sliceSize = list.Count;
 
-                for (var i = 0; i < sliceSize; i++)
+                for (int i = 0; i < sliceSize; i++)
                 {
 
-                    var listWord = list.ElementAt(i);
+                    Word listWord = list.ElementAt(i);
 
                     for (var y = 0; y < _derivation.ProductionRules.Count; y++)
                     {
@@ -125,29 +71,11 @@ namespace LFA_project1
                         var from = _derivation.ProductionRules.ElementAt(y).Item1;
                         var to = _derivation.ProductionRules.ElementAt(y).Item2;
 
-                        // Ignorar a primeira regra de derivação, pois só pode ser a primeira
-                        if (from != _derivation.InitialWord)
+                        var wordToList = Replace(from, to, listWord.Text);
+
+                        if (wordToList != listWord.Text && list.FirstOrDefault(q => q.Text == wordToList) == null && wordToList.Length <= size)
                         {
-
-
-
-                            // Para cada regra de derivação devemos procurar
-                            // todas as possiveis ocorrencias da mesma
-                            for (var x = 0; x <= listWord.Length; x++)
-                            {
-
-                                var wordToList = Replace(to, from, listWord, x);
-                                var newListStep = new List<int>(listS.ElementAt(i));
-                                newListStep.Add(y + 1);
-
-
-                                if (wordToList != listWord && !list.Contains(wordToList) && wordToList.Length <= size)
-                                {
-                                    list.Add(wordToList);
-                                    listS.Add(newListStep);
-                                }
-
-                            }
+                            list.Add(new Word(wordToList, listWord.Steps, y + 1));
                         }
 
                     }
@@ -156,7 +84,6 @@ namespace LFA_project1
                 }
 
                 list.RemoveRange(0, sliceSize);
-                listS.RemoveRange(0, sliceSize);
             }
 
             return null;
@@ -169,7 +96,7 @@ namespace LFA_project1
 
             while (response == null)
             {
-                response = GetStepsUsingBFS(word, limit++);
+                response = GetSteps(word, limit++);
             }
 
             return response;
