@@ -38,7 +38,7 @@ namespace LFA_project2
             // t.ResolveGraph();
             // t.PrintGraph();
 
-            string expression = "A+(B*(C-D)/E)";
+            string expression = "((A+B)*C-(D-E))*(F-G)";
 
 
             Stack<string> queue = new Stack<string>();
@@ -55,21 +55,44 @@ namespace LFA_project2
                 //se é operando(letra...)
                 if (operands.Contains(character))
                 {
+                    //copia para a saída
                     posFixa.Append(character);
                 }
-                else if (bracketsEntry.Contains(character) || operators.Contains(character))
+                //se é parenteses de abertura
+                else if (bracketsEntry.Contains(character))
                 {
+                    //coloca na pilha
                     queue.Push(character);
                 }
+                //se é um operador *,+
+                else if(operators.Contains(character))
+                {
+                    int prioridade = Prioridade(character);
+
+                    //enquanto a pilha nao está vazia, e houver no seu topo um operador com prioridade maior ou igual ao encontrado.
+                    //desempilha e copia para a saída
+                    while ((queue.Count != 0) && (Prioridade(queue.Peek()) >= prioridade))
+                    {
+                        posFixa.Append(queue.Pop());
+                    }
+                    
+                    //empilhando o caracter encontrado
+                    queue.Push(character);
+
+                }
+                //se é parenteses de fechamento
                 else if (bracketsClose.Contains(character))
                 {
+                    //parenteses de abertura recorrente a esse de fechamento
                     string dequeuedEntry = bracketsEntry[bracketsClose.IndexOf(character)];
 
-                    int prioridade = Prioridade(character);
-                    while ((queue.Count != 0) && (Prioridade(queue.Peek()) <= prioridade))
+                    //desempilha e copia para a saída até encontrar o parenteses de abertura correspondente.
+                    while(!queue.Peek().Equals(dequeuedEntry))
                     {
-
+                        posFixa.Append(queue.Pop());
                     }
+                    //removendo o parenteses de abertura
+                    queue.Pop();
                 }
             }
 
