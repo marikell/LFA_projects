@@ -6,16 +6,20 @@ namespace LFA_project2
 {
     public class Edge
     {
-        public string Name { get; set; }
+        public string ID { get; set; }
 
-        public ICollection<Node> NodesFrom { get; set; }
+        public Node NodeFrom { get; set; }
 
-        public ICollection<Node> NodesTo { get; set; }
+        public Node NodeTo { get; set; }
 
-        public Edge()
+        public char Cost { get; set; }
+
+        public Edge(Node nodeFrom, Node nodeTo, char cost)
         {
-            NodesFrom = new List<Node>();
-            NodesTo = new List<Node>();
+            // ID = string.Format("From:{0} // To: {1} // Cost: {2}", nodeFrom.ID, nodeTo.ID, cost);
+            NodeFrom = nodeFrom;
+            NodeTo = nodeTo;
+            Cost = cost;
         }
     }
 }

@@ -6,11 +6,11 @@ namespace LFA_project2
 {
     public class Graph
     {
-        public ICollection<Edge> Edges { get; set; }
+        public List<Edge> Edges { get; set; }
 
         public Graph()
         {
-
+            Edges = new List<Edge>();
         }
     }
 }
