@@ -17,7 +17,7 @@ namespace LFA_project2
 
         private static List<string> bracketsEntry = new List<string>
         {
-     
+
             "(",
             "[",
             "{"
@@ -32,6 +32,12 @@ namespace LFA_project2
 
         static void Main(string[] args)
         {
+
+            // para rodar thompson
+            //    var t = new Thompson("AB|C.");
+            // t.ResolveGraph();
+            // t.PrintGraph();
+
             string expression = "A+(B*(C-D)/E)";
 
 
@@ -56,18 +62,18 @@ namespace LFA_project2
                     queue.Enqueue(character);
                 }
                 else if (bracketsClose.Contains(character))
-                {                    
+                {
                     string dequeuedEntry = bracketsEntry[bracketsClose.IndexOf(character)];
 
                     int prioridade = Prioridade(character);
-                    while((queue.Count != 0) && (Prioridade(queue.Peek()) <= prioridade))
+                    while ((queue.Count != 0) && (Prioridade(queue.Peek()) <= prioridade))
                     {
-                                                
-                    }                    
-                }            
-             }
-            
-            while(queue.Count != 0)
+
+                    }
+                }
+            }
+
+            while (queue.Count != 0)
             {
                 posFixa.Append(queue.Dequeue());
             }
