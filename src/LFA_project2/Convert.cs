@@ -15,15 +15,15 @@ namespace LFA_project2
                     priority = 1;
                     break;
                 case "*":
-                    priority = 2;
+                    priority = 3;
                     break;
                 case "+":
                     priority = 3;
                     break;
-                case "-":
-                    priority = 3;
+                case ".":
+                    priority = 2;
                     break;
-                case "/":
+                case "|":
                     priority = 2;
                     break;
                 default:
