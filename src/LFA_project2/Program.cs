@@ -35,7 +35,7 @@ namespace LFA_project2
             string expression = "A+(B*(C-D)/E)";
 
 
-            Queue<string> queue = new Queue<string>();
+            Stack<string> queue = new Stack<string>();
             List<string> results = new List<string>();
 
             StringBuilder posFixa = new StringBuilder();
@@ -53,7 +53,7 @@ namespace LFA_project2
                 }
                 else if (bracketsEntry.Contains(character) || operators.Contains(character))
                 {
-                    queue.Enqueue(character);
+                    queue.Push(character);
                 }
                 else if (bracketsClose.Contains(character))
                 {                    
@@ -69,7 +69,7 @@ namespace LFA_project2
             
             while(queue.Count != 0)
             {
-                posFixa.Append(queue.Dequeue());
+                posFixa.Append(queue.Pop());
             }
 
             Console.WriteLine(posFixa.ToString());
