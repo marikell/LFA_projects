@@ -14,30 +14,17 @@ namespace LFA_project2
             ".",
             "+"
         };
-        public string Text { get; set; }
-        public Graph Graph { get; set; }
+        private string Text { get; set; }
+        private Graph Graph { get; set; }
+        private Stack<Tuple<Edge, Edge>> AuxStack { get; set; }
+        private int Count { get; set; }
 
         public Thompson(string posFixedString)
         {
             Text = posFixedString;
             Graph = new Graph();
-        }
-
-        private Stack<char> MountStackByText(string txt)
-        {
-            var newStack = new Stack<char>();
-
-            for (int i = txt.Length - 1; i >= 0; i--)
-            {
-                newStack.Push(txt[i]);
-            }
-
-            return newStack;
-        }
-
-        public void ResolveGraph()
-        {
-            Graph = getGraph();
+            AuxStack = new Stack<Tuple<Edge, Edge>>();
+            Count = 1;
         }
 
         public void PrintGraph()
@@ -72,167 +59,155 @@ namespace LFA_project2
 
         }
 
-        private Graph getGraph()
+        private void makeUnion()
         {
+            var graphA = AuxStack.Pop();
+            var graphB = AuxStack.Pop();
 
-            var result = new Graph();
-            var auxStack = new Stack<Tuple<Edge, Edge>>();
+            // cria os dois nós que vão se ligar com
+            // o inicio da união e com os nós das expressões
+            // que estão na operação
+            var nodeAUnion = CreateNode();
+            var nodeBUnion = CreateNode();
 
-            int count = 1;
+            // cria o primeiro nó da união
+            var unionStartNode = CreateNode();
 
+            // cria os edges entre o nó da união + os
+            // dois das laterais
+            var edgeUnionToNodeAUnion = CreatePath(unionStartNode, nodeAUnion);
+            var edgeUnionToNodeBUnion = CreatePath(unionStartNode, nodeBUnion);
+
+            // conecta os nós originais ao nodeAunion e nodeBunion
+            graphA.Item1.NodeFrom = nodeAUnion;
+            graphB.Item1.NodeFrom = nodeBUnion;
+
+            // Conectar o node ao final dos elemts.
+            var unionEndNode = CreateNode();
+            graphA.Item2.NodeTo = unionEndNode;
+            graphB.Item2.NodeTo = unionEndNode;
+
+            // Criar um novo edge inicial
+            var edgeInitalToStart = CreatePath(null, unionStartNode);
+
+            // Criar um novo edge final
+            var edgeFinalToEnd = CreatePath(unionEndNode, null);
+
+            var resultGraph = new Tuple<Edge, Edge>(edgeInitalToStart, edgeFinalToEnd);
+            AuxStack.Push(resultGraph);
+        }
+
+        private void makeAdd()
+        {
+            var secondItem = AuxStack.Pop();
+            var firstItem = AuxStack.Pop();
+
+            var andStartNode = CreateNode();
+            var andEndNode = CreateNode();
+
+            // Conectar o novo node ao começo do primeiro elemento
+            firstItem.Item1.NodeFrom = andStartNode;
+
+            // Cria node intermediario para ligar o primeiro com o segundo
+            var interNode = CreateNode();
+            firstItem.Item2.NodeTo = interNode;
+            secondItem.Item1.NodeFrom = interNode;
+
+            secondItem.Item2.NodeTo = andEndNode;
+
+            // criar edges das pontas
+            var startEdge = CreatePath(null, andStartNode);
+            var endEdge = CreatePath(andEndNode, null);
+
+            var resultGraph = new Tuple<Edge, Edge>(startEdge, endEdge);
+
+            AuxStack.Push(resultGraph);
+        }
+
+        private void makeExpression(char c)
+        {
+            var node = CreateNode(c);
+
+            var edgeNullToNode = CreatePath(null, node, node.Value);
+            var edgeNodeToNull = CreatePath(node, null);
+
+            AuxStack.Push(new Tuple<Edge, Edge>(edgeNullToNode, edgeNodeToNull));
+        }
+
+        private void makeA()
+        {
+            var graph = AuxStack.Pop();
+
+            var firstNode = CreateNode();
+            var secondNode = CreateNode();
+            var finalNode = CreateNode();
+
+            var pathToFirst = CreatePath(null, firstNode);
+            var pathToSecond = CreatePath(firstNode, secondNode);
+
+            // path to third
+            graph.Item1.NodeFrom = secondNode;
+            // path to final
+            graph.Item2.NodeTo = finalNode;
+
+            var finalPath = CreatePath(finalNode, null);
+            var edgeFirstToLast = CreatePath(firstNode, finalNode);
+
+            var pathToBackSecond = CreatePath(graph.Item2.NodeFrom, secondNode);
+
+            var resultGraph = new Tuple<Edge, Edge>(pathToFirst, finalPath);
+            AuxStack.Push(resultGraph);
+        }
+
+        public void makeT()
+        {
+            var lastExpression = AuxStack.Pop();
+            makeExpression(lastExpression.Item1.NodeTo.Value);
+            AuxStack.Push(lastExpression);
+            makeA();
+            makeAdd();
+        }
+
+        public void Resolve()
+        {
             foreach (char c in Text)
             {
 
                 if (c == '.')
                 {
-
-                    var secondItem = auxStack.Pop();
-                    var firstItem = auxStack.Pop();
-
-                    var andStartNode = createNode(count++, '&');
-                    var andEndNode = createNode(count++, '&');
-
-                    // Conectar o novo node ao começo do primeiro elemento
-                    firstItem.Item1.NodeFrom = andStartNode;
-
-                    // Cria node intermediario para ligar o primeiro com o segundo
-                    var interNode = createNode(count++, '&');
-                    firstItem.Item2.NodeTo = interNode;
-                    secondItem.Item1.NodeFrom = interNode;
-
-                    secondItem.Item2.NodeTo = andEndNode;
-
-                    // criar edges das pontas
-                    var startEdge = createPath(null, andStartNode, '&');
-                    result.Edges.Add(startEdge);
-                    var endEdge = createPath(andEndNode, null, '&');
-                    result.Edges.Add(endEdge);
-
-                    var resultGraph = new Tuple<Edge, Edge>(startEdge, endEdge);
-
-                    auxStack.Push(resultGraph);
-
+                    makeAdd();
                 }
                 else if (c == '|')
                 {
-
-                    var graphA = auxStack.Pop();
-                    var graphB = auxStack.Pop();
-
-                    // cria os dois nós que vão se ligar com
-                    // o inicio da união e com os nós das expressões
-                    // que estão na operação
-                    var nodeAUnion = createNode(count++, '&');
-                    var nodeBUnion = createNode(count++, '&');
-
-                    // cria o primeiro nó da união
-                    var unionStartNode = createNode(count++, '&');
-
-                    // cria os edges entre o nó da união + os
-                    // dois das laterais
-                    var edgeUnionToNodeAUnion = createPath(unionStartNode, nodeAUnion, '&');
-                    result.Edges.Add(edgeUnionToNodeAUnion);
-                    var edgeUnionToNodeBUnion = createPath(unionStartNode, nodeBUnion, '&');
-                    result.Edges.Add(edgeUnionToNodeBUnion);
-
-                    // conecta os nós originais ao nodeAunion e nodeBunion
-                    graphA.Item1.NodeFrom = nodeAUnion;
-                    graphB.Item1.NodeFrom = nodeBUnion;
-
-                    // Conectar o node ao final dos elemts.
-                    var unionEndNode = createNode(count++, '&');
-                    graphA.Item2.NodeTo = unionEndNode;
-                    graphB.Item2.NodeTo = unionEndNode;
-
-                    // Criar um novo edge inicial
-                    var edgeInitalToStart = createPath(null, unionStartNode, '&');
-                    result.Edges.Add(edgeInitalToStart);
-
-                    // Criar um novo edge final
-                    var edgeFinalToEnd = createPath(unionEndNode, null, '&');
-                    result.Edges.Add(edgeFinalToEnd);
-
-                    var resultGraph = new Tuple<Edge, Edge>(edgeInitalToStart, edgeFinalToEnd);
-
-                    auxStack.Push(resultGraph);
+                    makeUnion();
                 }
                 else if (c == '*')
                 {
-                    var graph = auxStack.Pop();
-
-                    var firstNode = createNode(count++, '&');
-                    var secondNode = createNode(count++, '&');
-                    var finalNode = createNode(count++, '&');
-
-                    var pathToFirst = createPath(null, firstNode, '&');
-                    var pathToSecond = createPath(firstNode, secondNode, '&');
-
-                    // path to third
-                    graph.Item1.NodeFrom = secondNode;
-                    // path to final
-                    graph.Item2.NodeTo = finalNode;
-
-                    var finalPath = createPath(finalNode, null, '&');
-                    var edgeFirstToLast = createPath(firstNode, finalNode, '&');
-
-                    var pathToBackSecond = createPath(graph.Item2.NodeFrom, secondNode, '&');
-
-                    result.Edges.Add(pathToFirst);
-                    result.Edges.Add(pathToSecond);
-                    result.Edges.Add(finalPath);
-                    result.Edges.Add(edgeFirstToLast);
-                    result.Edges.Add(pathToBackSecond);
-
-                    var resultGraph = new Tuple<Edge, Edge>(pathToFirst, finalPath);
-                    auxStack.Push(resultGraph);
+                    makeA();
+                }
+                else if (c == '+')
+                {
+                    makeT();
                 }
                 else
                 {
-                    var node = createNode(count++, c);
-
-                    var edgeNullToNode = createPath(null, node, node.Value);
-                    result.Edges.Add(edgeNullToNode);
-                    var edgeNodeToNull = createPath(node, null, '&');
-                    result.Edges.Add(edgeNodeToNull);
-
-
-                    auxStack.Push(new Tuple<Edge, Edge>(edgeNullToNode, edgeNodeToNull));
+                    makeExpression(c);
                 }
 
             }
 
-
-
-            // var startNode = new Node("0 (START)", '&');
-            // var endNode = new Node(string.Format("{0} (END)", count + 1), '&');
-
-            // foreach (Edge e in result.Edges)
-            // {
-
-            //     if (e.NodeFrom == null)
-            //     {
-            //         e.NodeFrom = startNode;
-            //     }
-
-            //     if (e.NodeTo == null)
-            //     {
-            //         e.NodeTo = endNode;
-            //     }
-
-            // }
-
-            return result;
-
         }
 
-        private Node createNode(int idCount, char value)
+        private Node CreateNode(char value = '&')
         {
-            return new Node(string.Format("{0}", idCount), value);
+            return new Node(string.Format("{0}", Count++), value);
         }
 
-        private Edge createPath(Node nodeA, Node nodeB, char cost)
+        private Edge CreatePath(Node nodeA, Node nodeB, char cost = '&')
         {
-            return new Edge(nodeA, nodeB, cost);
+            Edge newEdge = new Edge(nodeA, nodeB, cost);
+            Graph.Edges.Add(newEdge);
+            return newEdge;
         }
 
     }

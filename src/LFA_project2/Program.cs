@@ -34,10 +34,10 @@ namespace LFA_project2
         {
 
 
-            // var t = new Thompson("A*B*.");
-            // t.ResolveGraph();
-            // t.PrintGraph();
-            // return;
+            var t = new Thompson("A+BC|*.D.");
+            t.Resolve();
+            t.PrintGraph();
+            return;
 
             string expression = "((A+B)*C-(D-E))*(F-G)";
 
