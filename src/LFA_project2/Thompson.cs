@@ -50,7 +50,7 @@ namespace LFA_project2
 
                 if (e.NodeFrom == null)
                 {
-                    nodeFromID = "s";
+                    nodeFromID = "-";
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace LFA_project2
 
                 if (e.NodeTo == null)
                 {
-                    nodeToID = "e";
+                    nodeToID = "-";
                 }
                 else
                 {
@@ -89,19 +89,26 @@ namespace LFA_project2
                     var secondItem = auxStack.Pop();
                     var firstItem = auxStack.Pop();
 
+                    var andStartNode = createNode(count++, '&');
+                    var andEndNode = createNode(count++, '&');
+
                     // Conectar o novo node ao começo do primeiro elemento
-                    firstItem.Item1.NodeFrom = null;
+                    firstItem.Item1.NodeFrom = andStartNode;
 
                     // Cria node intermediario para ligar o primeiro com o segundo
                     var interNode = createNode(count++, '&');
                     firstItem.Item2.NodeTo = interNode;
                     secondItem.Item1.NodeFrom = interNode;
 
-                    // Conectar o final do segundo elemento
-                    var unionEndNode = createNode(count++, '&');
-                    secondItem.Item2.NodeTo = null;
-                    
-                    var resultGraph = new Tuple<Edge, Edge>(firstItem.Item1, secondItem.Item2);
+                    secondItem.Item2.NodeTo = andEndNode;
+
+                    // criar edges das pontas
+                    var startEdge = createPath(null, andStartNode, '&');
+                    result.Edges.Add(startEdge);
+                    var endEdge = createPath(andEndNode, null, '&');
+                    result.Edges.Add(endEdge);
+
+                    var resultGraph = new Tuple<Edge, Edge>(startEdge, endEdge);
 
                     auxStack.Push(resultGraph);
 
@@ -112,10 +119,25 @@ namespace LFA_project2
                     var graphA = auxStack.Pop();
                     var graphB = auxStack.Pop();
 
-                    // Conectar o novo node ao começo dos elemt.
+                    // cria os dois nós que vão se ligar com
+                    // o inicio da união e com os nós das expressões
+                    // que estão na operação
+                    var nodeAUnion = createNode(count++, '&');
+                    var nodeBUnion = createNode(count++, '&');
+
+                    // cria o primeiro nó da união
                     var unionStartNode = createNode(count++, '&');
-                    graphA.Item1.NodeFrom = unionStartNode;
-                    graphB.Item1.NodeFrom = unionStartNode;
+
+                    // cria os edges entre o nó da união + os
+                    // dois das laterais
+                    var edgeUnionToNodeAUnion = createPath(unionStartNode, nodeAUnion, '&');
+                    result.Edges.Add(edgeUnionToNodeAUnion);
+                    var edgeUnionToNodeBUnion = createPath(unionStartNode, nodeBUnion, '&');
+                    result.Edges.Add(edgeUnionToNodeBUnion);
+
+                    // conecta os nós originais ao nodeAunion e nodeBunion
+                    graphA.Item1.NodeFrom = nodeAUnion;
+                    graphB.Item1.NodeFrom = nodeBUnion;
 
                     // Conectar o node ao final dos elemts.
                     var unionEndNode = createNode(count++, '&');
@@ -134,14 +156,45 @@ namespace LFA_project2
 
                     auxStack.Push(resultGraph);
                 }
+                else if (c == '*')
+                {
+                    var graph = auxStack.Pop();
+
+                    var firstNode = createNode(count++, '&');
+                    var secondNode = createNode(count++, '&');
+                    var finalNode = createNode(count++, '&');
+
+                    var pathToFirst = createPath(null, firstNode, '&');
+                    var pathToSecond = createPath(firstNode, secondNode, '&');
+
+                    // path to third
+                    graph.Item1.NodeFrom = secondNode;
+                    // path to final
+                    graph.Item2.NodeTo = finalNode;
+
+                    var finalPath = createPath(finalNode, null, '&');
+                    var edgeFirstToLast = createPath(firstNode, finalNode, '&');
+
+                    var pathToBackSecond = createPath(graph.Item2.NodeFrom, secondNode, '&');
+
+                    result.Edges.Add(pathToFirst);
+                    result.Edges.Add(pathToSecond);
+                    result.Edges.Add(finalPath);
+                    result.Edges.Add(edgeFirstToLast);
+                    result.Edges.Add(pathToBackSecond);
+
+                    var resultGraph = new Tuple<Edge, Edge>(pathToFirst, finalPath);
+                    auxStack.Push(resultGraph);
+                }
                 else
                 {
                     var node = createNode(count++, c);
 
-                    var edgeNodeToNull = createPath(node, null, '&');
-                    result.Edges.Add(edgeNodeToNull);
                     var edgeNullToNode = createPath(null, node, node.Value);
                     result.Edges.Add(edgeNullToNode);
+                    var edgeNodeToNull = createPath(node, null, '&');
+                    result.Edges.Add(edgeNodeToNull);
+
 
                     auxStack.Push(new Tuple<Edge, Edge>(edgeNullToNode, edgeNodeToNull));
                 }

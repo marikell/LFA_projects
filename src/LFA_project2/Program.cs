@@ -33,10 +33,11 @@ namespace LFA_project2
         static void Main(string[] args)
         {
 
-            // para rodar thompson
-            //    var t = new Thompson("AB|C.");
+
+            // var t = new Thompson("A*B*.");
             // t.ResolveGraph();
             // t.PrintGraph();
+            // return;
 
             string expression = "((A+B)*C-(D-E))*(F-G)";
 
@@ -65,7 +66,7 @@ namespace LFA_project2
                     queue.Push(character);
                 }
                 //se é um operador *,+
-                else if(operators.Contains(character))
+                else if (operators.Contains(character))
                 {
                     int prioridade = Prioridade(character);
 
@@ -75,7 +76,7 @@ namespace LFA_project2
                     {
                         posFixa.Append(queue.Pop());
                     }
-                    
+
                     //empilhando o caracter encontrado
                     queue.Push(character);
 
@@ -87,7 +88,7 @@ namespace LFA_project2
                     string dequeuedEntry = bracketsEntry[bracketsClose.IndexOf(character)];
 
                     //desempilha e copia para a saída até encontrar o parenteses de abertura correspondente.
-                    while(!queue.Peek().Equals(dequeuedEntry))
+                    while (!queue.Peek().Equals(dequeuedEntry))
                     {
                         posFixa.Append(queue.Pop());
                     }
