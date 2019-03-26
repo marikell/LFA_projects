@@ -1,39 +1,16 @@
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace LFA_project2
 {
     public static class Convert
     {
-        public static int GetPriority(string character)
-        {
-            int priority = 0;
-
-            switch (character)
-            {
-                case "(":
-                    priority = 1;
-                    break;
-                case "*":
-                    priority = 3;
-                    break;
-                case "+":
-                    priority = 3;
-                    break;
-                case ".":
-                    priority = 2;
-                    break;
-                case "|":
-                    priority = 2;
-                    break;
-                default:
-                    break;
-            }
-
-            return priority;
-
-        } 
-        public static string ToPosFixed(string regularExpression)
+        public static bool GetPriority(string peek, string currentOperator) => 
+                    PosFixedUtils.Operators.FirstOrDefault(x => x.Item1 == peek).Item2 >= 
+                    PosFixedUtils.Operators.FirstOrDefault(o => o.Item1 == currentOperator).Item2;
+        
+        public static string ToPosFixed(string regularExpression, List<string> operands)
         {
             string validatedRegularExpression = Validate.TurnExpressionValid(regularExpression);
             
@@ -41,8 +18,6 @@ namespace LFA_project2
             List<string> results = new List<string>();
 
             StringBuilder posFixa = new StringBuilder();
-
-            var operands = GetOperands(expression);
 
             foreach (var c in validatedRegularExpression)
             {
@@ -55,19 +30,17 @@ namespace LFA_project2
                     posFixa.Append(character);
                 }
                 //se é parenteses de abertura
-                else if (bracketsEntry.Contains(character))
+                else if (PosFixedUtils.BracketsEntry.Any(o => o.Item1 == character))
                 {
                     //coloca na pilha
                     stack.Push(character);
                 }
                 //se é um operador *,+
-                else if(operators.Contains(character))
+                else if(PosFixedUtils.Operators.Any(o => o.Item1 == character))
                 {
-                    int prioridade = GetPriority(character);
-
                     //enquanto a pilha nao está vazia, e houver no seu topo um operador com prioridade maior ou igual ao encontrado.
                     //desempilha e copia para a saída
-                    while ((stack.Count != 0) && (GetPriority(stack.Peek()) >= prioridade))
+                    while ((stack.Count != 0) && (GetPriority(stack.Peek(), character)))
                     {
                         posFixa.Append(stack.Pop());
                     }
@@ -77,11 +50,13 @@ namespace LFA_project2
 
                 }
                 //se é parenteses de fechamento
-                else if (bracketsClose.Contains(character))
+                else if (PosFixedUtils.BracketsClose.Any(o => o.Item1 == character))
                 {
                     //parenteses de abertura recorrente a esse de fechamento
-                    string dequeuedEntry = bracketsEntry[bracketsClose.IndexOf(character)];
-
+                    string dequeuedEntry = PosFixedUtils.BracketsEntry
+                                                        .ElementAt(PosFixedUtils.BracketsClose
+                                                        .FindIndex(0, PosFixedUtils.BracketsClose.Count, o => o.Item1 == character)).Item1;                                                       
+                    
                     //desempilha e copia para a saída até encontrar o parenteses de abertura correspondente.
                     while(!stack.Peek().Equals(dequeuedEntry))
                     {
