@@ -15,19 +15,6 @@ namespace LFA_project2
             // t.ResolveGraph();
             // t.PrintGraph();
 
-            string expression = "((A|B)*C)|D";
-
-            List<string> operands = new List<string>
-            {
-                "A",
-                "B",
-                "C",
-                "D",
-                "E"
-            };
-
-            Console.WriteLine(Convert.ToPosFixed(expression, operands));
-
             Console.ReadKey();
         }
     }
