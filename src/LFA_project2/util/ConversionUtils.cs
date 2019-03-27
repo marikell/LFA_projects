@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using LFA_project2.Constant;
 
-namespace LFA_project2
+namespace LFA_project2.Utils
 {
-    public static class Conversion
+    public static class ConversionUtils
     {
         public static bool GetPriority(string peek, string currentOperator) => 
-                    PostFixUtils.Priorities.FirstOrDefault(x => x.Item1 == peek).Item2 >= 
-                    PostFixUtils.Priorities.FirstOrDefault(o => o.Item1 == currentOperator).Item2;
+                    Constants.Priorities.FirstOrDefault(x => x.Item1 == peek).Item2 >= 
+                    Constants.Priorities.FirstOrDefault(o => o.Item1 == currentOperator).Item2;
         
         public static string ToPostFix(string regularExpression, List<string> operands)
         {
@@ -30,13 +31,13 @@ namespace LFA_project2
                     postFix.Append(character);
                 }
                 //se é parenteses de abertura
-                else if (PostFixUtils.Brackets.Any(o => o.Item1 == character))
+                else if (Constants.Brackets.Any(o => o.Item1 == character))
                 {
                     //coloca na pilha
                     stack.Push(character);
                 }
                 //se é um operador *,+
-                else if(PostFixUtils.Operators.Any(o => o.Item1 == character))
+                else if(Constants.Operators.Any(o => o.Item1 == character))
                 {
                     //enquanto a pilha nao está vazia, e houver no seu topo um operador com prioridade maior ou igual ao encontrado.
                     //desempilha e copia para a saída
@@ -50,10 +51,10 @@ namespace LFA_project2
 
                 }
                 //se é parenteses de fechamento
-                else if (PostFixUtils.Brackets.Any(o => o.Item2 == character))
+                else if (Constants.Brackets.Any(o => o.Item2 == character))
                 {
                     //parenteses de abertura recorrente a esse de fechamento
-                    string dequeuedEntry = PostFixUtils.Brackets.FirstOrDefault(o => o.Item2 == character).Item1;
+                    string dequeuedEntry = Constants.Brackets.FirstOrDefault(o => o.Item2 == character).Item1;
                     //desempilha e copia para a saída até encontrar o parenteses de abertura correspondente.
                     while(!stack.Peek().Equals(dequeuedEntry))
                     {

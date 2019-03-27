@@ -1,3 +1,4 @@
+using LFA_project2.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,14 +7,6 @@ namespace LFA_project2
 {
     public class Thompson
     {
-
-        private static List<string> operators = new List<string>
-        {
-            "*",
-            "|",
-            ".",
-            "+"
-        };
         private string Text { get; set; }
         private Graph Graph { get; set; }
         private Stack<Tuple<Edge, Edge>> AuxStack { get; set; }
@@ -59,7 +52,7 @@ namespace LFA_project2
 
         }
 
-        private void makeUnion()
+        private void MakeUnion()
         {
             var graphA = AuxStack.Pop();
             var graphB = AuxStack.Pop();
@@ -97,7 +90,7 @@ namespace LFA_project2
             AuxStack.Push(resultGraph);
         }
 
-        private void makeAdd()
+        private void MakeAdd()
         {
             var secondItem = AuxStack.Pop();
             var firstItem = AuxStack.Pop();
@@ -124,7 +117,7 @@ namespace LFA_project2
             AuxStack.Push(resultGraph);
         }
 
-        private void makeExpression(char c)
+        private void MakeExpression(char c)
         {
             var node = CreateNode(c);
 
@@ -134,7 +127,7 @@ namespace LFA_project2
             AuxStack.Push(new Tuple<Edge, Edge>(edgeNullToNode, edgeNodeToNull));
         }
 
-        private void makeA()
+        private void MakeA()
         {
             var graph = AuxStack.Pop();
 
@@ -159,13 +152,13 @@ namespace LFA_project2
             AuxStack.Push(resultGraph);
         }
 
-        public void makeT()
+        public void MakeT()
         {
             var lastExpression = AuxStack.Pop();
-            makeExpression(lastExpression.Item1.NodeTo.Value);
+            MakeExpression(lastExpression.Item1.NodeTo.Value);
             AuxStack.Push(lastExpression);
-            makeA();
-            makeAdd();
+            MakeA();
+            MakeAdd();
         }
 
         public void Resolve()
@@ -175,23 +168,23 @@ namespace LFA_project2
 
                 if (c == '.')
                 {
-                    makeAdd();
+                    MakeAdd();
                 }
                 else if (c == '|')
                 {
-                    makeUnion();
+                    MakeUnion();
                 }
                 else if (c == '*')
                 {
-                    makeA();
+                    MakeA();
                 }
                 else if (c == '+')
                 {
-                    makeT();
+                    MakeT();
                 }
                 else
                 {
-                    makeExpression(c);
+                    MakeExpression(c);
                 }
 
             }

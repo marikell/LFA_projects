@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LFA_project2
+namespace LFA_project2.Constant
 {
-    public static class PostFixUtils
+    public static class Constants
     {
         public static List<Tuple<string, int>> Operators => new List<Tuple<string, int>>
         {

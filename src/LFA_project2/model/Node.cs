@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LFA_project2
+namespace LFA_project2.Model
 {
     public class Node
     {
