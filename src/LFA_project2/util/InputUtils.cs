@@ -37,12 +37,10 @@ namespace LFA_project2.Utils
                 }
             }
 
-           return (entryBracketsCount == closeBracketsCount) ? true : throw new Exception("As chaves, colchetes ou parentêses da expressão estão errados.");
+            return (entryBracketsCount == closeBracketsCount) ? true : throw new Exception("As chaves, colchetes ou parentêses da expressão estão errados.");
         }
-
-        private bool ValidateOperands()
+        private List<string> GetOperandsOccurrences()
         {
-
             List<string> operands = new List<string>();
 
             //se nao for bracket e nao estiver no alfabeto, deve ser operador
@@ -74,10 +72,7 @@ namespace LFA_project2.Utils
                 }
             }
 
-            //lista de strings com o retorno de todas as ocorrências do alfabeto.
-
-
-            return ValidateRegex(operands);
+            return operands;
         }
 
         private bool ValidateRegex(List<string> occurrences)
@@ -88,16 +83,16 @@ namespace LFA_project2.Utils
             {
                 if (_input.Operands.Contains(oc))
                 {
-                    found.Append(oc);
+                    found.Add(oc);
                 }
             }
 
             return (occurrences.Count == found.Count) ? true : throw new Exception("A expressão está inválida em relação ao alfabeto.");
         }
 
-        public bool ValidateEmptyStrings()
+        private bool ValidateEmptyStrings()
         {
-            return (!string.IsNullOrEmpty(_input.RegularExpression) && _input.Operands.Count > 0) ? true : throw new Exception("Uma das entradas está vazia.");
+            return (!string.IsNullOrEmpty(_input.RegularExpression) && _input.Operands.Count > 0) ? true : throw new Exception("Há campos vazios.");
         }
 
         public bool Validate()
@@ -105,7 +100,7 @@ namespace LFA_project2.Utils
             //Removendo os espaços vazios
             _input = new Input(_input.Operands.ToArray(), ValidateEmptySpaces());
             //Validando colchetes, chaves e parenteses
-            return ValidateBrackets() & ValidateOperands();
+            return ValidateEmptyStrings() & ValidateBrackets() & ValidateRegex(GetOperandsOccurrences()); ;
         }
     }
 }
