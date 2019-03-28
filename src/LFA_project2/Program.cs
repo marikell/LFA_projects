@@ -31,7 +31,12 @@ namespace LFA_project2
                     Thompson thompson = new Thompson(ConversionUtils.ToPostFix(input.RegularExpression, input.Operands));
                     thompson.Resolve();
                     thompson.PrintGraph().ForEach(o => { Console.WriteLine(o); });
-                }                
+                }    
+                
+                else
+                {
+                    throw new Exception("O autômato não possui entradas válidas.");
+                }
 
             }
             catch (Exception ex)
