@@ -20,17 +20,25 @@ namespace LFA_project2
                 Console.WriteLine("\nExpressão Regular válida: ");
                 string regularExpression = Console.ReadLine();
 
-                InputUtils inputUtils = new InputUtils(new Input(operands.Split(','), regularExpression));
+                Input input = new Input(operands.Split(','), regularExpression);
 
-                inputUtils.ValidateOperands();
+                InputUtils inputUtils = new InputUtils(input);
 
-                //Thompson thompson = new Thompson(ConversionUtils.ToPostFix(input.RegularExpression, input.Operands));
-                //thompson.Resolve();
-                //thompson.PrintGraph();
+                if(inputUtils.Validate())
+                {
+                    Thompson thompson = new Thompson(ConversionUtils.ToPostFix(input.RegularExpression, input.Operands));
+                    thompson.Resolve();
+                    thompson.PrintGraph();
+                }                
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Erro ao gerar autômato: {ex.Message}");
+            }
+            finally
+            {
+                Console.ReadKey();
             }
         }
     }

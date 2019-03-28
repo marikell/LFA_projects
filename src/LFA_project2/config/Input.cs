@@ -15,5 +15,9 @@ namespace LFA_project2.Config
             Operands = operands.ToList();
             RegularExpression = regularExpression;
         }
+        public Input()
+        {
+
+        }
     }
 }
