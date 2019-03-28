@@ -39,6 +39,16 @@ namespace LFA_project2.Utils
 
             return (entryBracketsCount == closeBracketsCount) ? true : throw new Exception("As chaves, colchetes ou parentêses da expressão estão errados.");
         }
+
+        private bool ValidateCharacterOperands(List<string> occurrences)
+        {
+            foreach (string oc in occurrences)
+            {
+                if(oc.Length > 1) { throw new Exception("Só são aceitos operandos com 1 caracter."); }
+            }
+
+            return true;
+        }
         private List<string> GetOperandsOccurrences()
         {
             List<string> operands = new List<string>();
@@ -100,7 +110,7 @@ namespace LFA_project2.Utils
             //Removendo os espaços vazios
             _input = new Input(_input.Operands.ToArray(), ValidateEmptySpaces());
             //Validando colchetes, chaves e parenteses
-            return ValidateEmptyStrings() & ValidateBrackets() & ValidateRegex(GetOperandsOccurrences()); ;
+            return ValidateEmptyStrings() & ValidateBrackets() & ValidateRegex(GetOperandsOccurrences()) & ValidateCharacterOperands(GetOperandsOccurrences());
         }
     }
 }
