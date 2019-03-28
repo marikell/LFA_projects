@@ -1,10 +1,12 @@
 ﻿using LFA_project2.Config;
+using LFA_project2.util;
 using LFA_project2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace LFA_project2
@@ -24,11 +26,11 @@ namespace LFA_project2
 
                 InputUtils inputUtils = new InputUtils(input);
 
-                if(inputUtils.Validate())
+                if (inputUtils.Validate())
                 {
                     Thompson thompson = new Thompson(ConversionUtils.ToPostFix(input.RegularExpression, input.Operands));
                     thompson.Resolve();
-                    thompson.PrintGraph();
+                    thompson.PrintGraph().ForEach(o => { Console.WriteLine(o); });
                 }                
 
             }

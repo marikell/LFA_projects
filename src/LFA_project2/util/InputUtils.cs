@@ -1,5 +1,6 @@
 ﻿using LFA_project2.Config;
 using LFA_project2.Constant;
+using LFA_project2.util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,11 @@ namespace LFA_project2.Utils
             _input = input;
         }
 
-        public string ValidateEmptySpaces() => _input.RegularExpression.Replace(" ", "");
+        public string RemoveEmptySpaces() => _input.RegularExpression.Replace(" ", "");
 
-        private bool ValidateBrackets()
+        public bool ValidateBrackets()
         {
-            int entryBracketsCount = 0;
-            int closeBracketsCount = 0;
+            Dictionary<string, int> occurrences = new Dictionary<string, int>();
 
             foreach (char c in _input.RegularExpression)
             {
@@ -28,28 +28,51 @@ namespace LFA_project2.Utils
 
                 if (Constants.Brackets.Any(o => o.Item1 == character))
                 {
-                    entryBracketsCount++;
-                }
+                    if (occurrences.ContainsKey(character)) { occurrences[character] = occurrences[character] + 1; }
 
-                if (Constants.Brackets.Any(o => o.Item2 == character))
+                    else
+                    {
+                        string close = Constants.Brackets.FirstOrDefault(x => x.Item1 == character).Item2;
+
+                        occurrences.Add(character, 1);
+                        occurrences.Add(close, 0);
+                    }
+                }
+                else if(Constants.Brackets.Any(o => o.Item2 == character))
                 {
-                    closeBracketsCount++;
+                    if (occurrences.ContainsKey(character)) { occurrences[character] = occurrences[character] + 1; }
+                    else
+                    {
+                        string entry = Constants.Brackets.FirstOrDefault(x => x.Item2 == character).Item1;
+
+                        occurrences.Add(character, 1);
+                        occurrences.Add(entry, 0);
+                    }
                 }
             }
 
-            return (entryBracketsCount == closeBracketsCount) ? true : throw new Exception("As chaves, colchetes ou parentêses da expressão estão errados.");
+            var entries = occurrences.Where(o => Constants.Brackets.Select(v => v.Item1).Contains(o.Key)).ToList();
+
+            foreach (var e in entries)
+            {
+                string close = Constants.Brackets.FirstOrDefault(o => o.Item1 == e.Key).Item2;
+
+                if(occurrences[close] != e.Value) { return false; }
+            }            
+
+            return true;
         }
 
-        private bool ValidateCharacterOperands(List<string> occurrences)
+        public bool ValidateCharacterOperands()
         {
-            foreach (string oc in occurrences)
+            foreach (string o in _input.Operands)
             {
-                if(oc.Length > 1) { throw new Exception("Só são aceitos operandos com 1 caracter."); }
+                if (o.Length > 1) { return false; }
             }
 
             return true;
         }
-        private List<string> GetOperandsOccurrences()
+        public List<string> GetOperandsOccurrences()
         {
             List<string> operands = new List<string>();
 
@@ -73,9 +96,7 @@ namespace LFA_project2.Utils
                         operand.Append(character);
                         i++;
 
-                        character = (i < _input.RegularExpression.Length) ?
-                                    _input.RegularExpression[i].ToString() : string.Empty;
-
+                        character = (i < _input.RegularExpression.Length) ? _input.RegularExpression[i].ToString() : string.Empty;
                     }
 
                     operands.Add(operand.ToString());
@@ -85,32 +106,37 @@ namespace LFA_project2.Utils
             return operands;
         }
 
-        private bool ValidateRegex(List<string> occurrences)
+        public bool ValidateRegex(List<string> occurrences)
         {
+            var commutes = CommuteUtils.CommuteWord(string.Join("", _input.Operands));
+
+            commutes.AddRange(_input.Operands);
+
             List<string> found = new List<string>();
-            //para cada suposto alfabeto
+
             foreach (string oc in occurrences)
             {
-                if (_input.Operands.Contains(oc))
+                if (commutes.Contains(oc))
                 {
                     found.Add(oc);
                 }
             }
 
-            return (occurrences.Count == found.Count) ? true : throw new Exception("A expressão está inválida em relação ao alfabeto.");
+            return (occurrences.Count == found.Count);
         }
 
-        private bool ValidateEmptyStrings()
+
+        public bool ValidateEmptyStrings()
         {
-            return (!string.IsNullOrEmpty(_input.RegularExpression) && _input.Operands.Count > 0) ? true : throw new Exception("Há campos vazios.");
+            return (!string.IsNullOrEmpty(_input.RegularExpression) && _input.Operands.Count > 0);
         }
 
         public bool Validate()
         {
             //Removendo os espaços vazios
-            _input = new Input(_input.Operands.ToArray(), ValidateEmptySpaces());
+            _input = new Input(_input.Operands.ToArray(), RemoveEmptySpaces());
             //Validando colchetes, chaves e parenteses
-            return ValidateEmptyStrings() & ValidateBrackets() & ValidateRegex(GetOperandsOccurrences()) & ValidateCharacterOperands(GetOperandsOccurrences());
+            return ValidateEmptyStrings() & ValidateBrackets() & ValidateRegex(GetOperandsOccurrences()) & ValidateCharacterOperands();
         }
     }
 }

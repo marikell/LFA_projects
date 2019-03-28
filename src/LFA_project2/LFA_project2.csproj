@@ -6,11 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <Compile Remove="validation\**" />
+    <EmbeddedResource Remove="validation\**" />
+    <None Remove="validation\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="validation\" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
 </Project>

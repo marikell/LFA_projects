@@ -7,10 +7,12 @@ namespace LFA_project2.Tests
 {
     public class ThompsonTest
     {
+        
         [Fact]
+
         public void ShouldResolveThompsonGraph()
         {
-
+            throw new Exception("Not Implemented!");
         }
     }
 }

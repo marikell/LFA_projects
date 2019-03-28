@@ -12,16 +12,17 @@ namespace LFA_project2
         private Stack<Tuple<Edge, Edge>> AuxStack { get; set; }
         private int Count { get; set; }
 
-        public Thompson(string posFixedString)
+        public Thompson(string postFixString)
         {
-            Text = posFixedString;
+            Text = postFixString;
             Graph = new Graph();
             AuxStack = new Stack<Tuple<Edge, Edge>>();
             Count = 1;
         }
 
-        public void PrintGraph()
+        public List<string> PrintGraph()
         {
+            List<string> graphFormats = new List<string>();
 
             foreach (Edge e in Graph.Edges)
             {
@@ -46,9 +47,11 @@ namespace LFA_project2
                     nodeToID = e.NodeTo.ID;
                 }
 
-
-                Console.WriteLine(string.Format("FROM: {0} // TO: {1} // COST: {2}", nodeFromID, nodeToID, e.Cost));
+                graphFormats.Add(string.Format("FROM: {0} // TO: {1} // COST: {2}", nodeFromID, nodeToID, e.Cost));
+                graphFormats.Add($" {nodeFromID} -------> {nodeToID}");
             }
+
+            return graphFormats;
 
         }
 

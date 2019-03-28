@@ -12,15 +12,13 @@ namespace LFA_project2.Utils
                     Constants.Priorities.FirstOrDefault(o => o.Item1 == currentOperator).Item2;
         
         public static string ToPostFix(string regularExpression, List<string> operands)
-        {
-            string validatedRegularExpression = Validate.TurnExpressionValid(regularExpression);
-            
+        {            
             Stack<string> stack = new Stack<string>();
             List<string> results = new List<string>();
 
             StringBuilder postFix = new StringBuilder();
 
-            foreach (var c in validatedRegularExpression)
+            foreach (var c in regularExpression)
             {
                 string character = c.ToString();
 
