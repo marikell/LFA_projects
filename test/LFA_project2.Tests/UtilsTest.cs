@@ -21,9 +21,9 @@ namespace LFA_project2.Tests
         }
 
         [Theory]
-        //[InlineData("(a+b)*", new string[] { "a", "b" }, true)]
-        //[InlineData("(a+b*", new string[] { "a", "b" }, false)]
-        //[InlineData("(a+b}*", new string[] { "a", "b" }, false)]
+        [InlineData("(a+b)*", new string[] { "a", "b" }, true)]
+        [InlineData("(a+b*", new string[] { "a", "b" }, false)]
+        [InlineData("(a+b}*", new string[] { "a", "b" }, false)]
         [InlineData("([a+b])}*", new string[] { "a", "b" }, false)]
 
         public void ShouldValidateBrackets(string regularExpression, string[] operands, bool expected)
