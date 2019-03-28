@@ -48,7 +48,6 @@ namespace LFA_project2
                 }
 
                 graphFormats.Add(string.Format("FROM: {0} // TO: {1} // COST: {2}", nodeFromID, nodeToID, e.Cost));
-                graphFormats.Add($" {nodeFromID} -------> {nodeToID}");
             }
 
             return graphFormats;
