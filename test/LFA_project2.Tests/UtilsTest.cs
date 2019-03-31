@@ -39,6 +39,7 @@ namespace LFA_project2.Tests
         public void ShouldValidateOperandsWithOnlyCharacter(string regularExpression, string[] operands, bool expected)
         {
             InputUtils utils = new InputUtils(new Input(operands, regularExpression));
+            Assert.Equal(expected, utils.ValidateCharacterOperands());
         }
 
         [Theory]
