@@ -17,13 +17,18 @@ namespace LFA_project3
 
         private int _closureCount;
 
+        private Queue<Closure> _closureTable;
+
         public AFD(Graph graph)
         {
             _closureCount = 0;
             _graph = graph;
+            _closureTable = new Queue<Closure>();
             _statesToProcess = new Queue<Closure>();
             _states = new List<Closure>();
         }
+
+        public List<Closure> States => _states;
 
         /// <summary>
         /// Retorna a closure do grafo.
@@ -63,8 +68,11 @@ namespace LFA_project3
                 {
                     Closure ca = GetState(stateProcessing, a);
 
+                    _closureTable.Enqueue(ca);
+
                     if(_statesToProcess.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null &&
-                        _states.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null)
+                        _states.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null
+                        && ca.States.Count > 0)
                     {
                         _statesToProcess.Enqueue(ca);
                         _closureCount++;
@@ -93,7 +101,7 @@ namespace LFA_project3
 
             if(found == null)
             {
-                return new Closure(new Node(GetNewID(), $"s{GetNewID()}"), states.Distinct(new NodeEqualityComparer()).ToList());
+                return new Closure(new Node(GetNewID(), $"s{GetNewID()}"), states.Distinct(new NodeEqualityComparer()).ToList(), character);
             }
 
             return found;
@@ -106,10 +114,8 @@ namespace LFA_project3
 
         public override string ToString()
         {
-            return $"({string.Join(" - ", _states)})";
+            return $"({string.Join("-", _states)})";
         }
-
-
 
         /// <summary>
         /// Verifica se o estado ou closure já existe.
