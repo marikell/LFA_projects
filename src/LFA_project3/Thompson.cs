@@ -35,7 +35,7 @@ namespace LFA_project3
                 }
                 else
                 {
-                    nodeFromID = e.NodeFrom.ID;
+                    nodeFromID = e.NodeFrom.Value;
                 }
 
                 if (e.NodeTo == null)
@@ -44,7 +44,7 @@ namespace LFA_project3
                 }
                 else
                 {
-                    nodeToID = e.NodeTo.ID;
+                    nodeToID = e.NodeTo.Value;
                 }
 
                 graphFormats.Add(string.Format("FROM: {0} // TO: {1} // COST: {2}", nodeFromID, nodeToID, e.Cost));
@@ -195,7 +195,7 @@ namespace LFA_project3
 
         private Node CreateNode(string value = "&")
         {
-            return new Node(string.Format("{0}", Count++), value);
+            return new Node(Count++, value);
         }
 
         private Edge CreatePath(Node nodeA, Node nodeB, string cost = "&")

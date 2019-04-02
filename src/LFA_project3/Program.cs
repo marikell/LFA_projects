@@ -1,5 +1,7 @@
-﻿using LFA_project3.Model;
+﻿using LFA_project3.model;
+using LFA_project3.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LFA_project3
@@ -11,16 +13,22 @@ namespace LFA_project3
         {
             //Console.WriteLine(BuildGraph().ShowGraph().ToString());
 
-            Graph graph = BuildGraph();
+            Graph graph = BuildGraph1();
 
-            GraphConversion g = new GraphConversion(graph);
+            AFD g = new AFD(graph);
 
-            Node nodeStart = graph.Edges.FirstOrDefault(o => o.NodeFrom.ID.Contains("0")).NodeFrom;
+            Node nodeStart = graph.Edges.FirstOrDefault(o => o.NodeFrom.ID == 0).NodeFrom;
 
-            foreach (var item in g.GetClosure(nodeStart).States)
-            {
-                Console.WriteLine(item.ID);
-            }
+            AFD afd = new AFD(graph);
+
+            afd.BuildClosures(nodeStart, new string[] { "a", "b","c" });
+
+            Console.WriteLine(afd.ToString());
+
+            //foreach (var item in g.GetClosure(nodeStart).States)
+            //{
+            //    Console.WriteLine(item.ID);
+            //}
             
             Console.ReadKey();
         }
@@ -29,14 +37,66 @@ namespace LFA_project3
         {
             Graph graph = new Graph();
 
-            Node n0 = new Node("q0","q0");
-            Node n1 = new Node("q1", "q1");
-            Node n2 = new Node("q2", "q2");
-            Node n3 = new Node("q3", "q3");
-            Node n4 = new Node("q4", "q4");
-            Node n5 = new Node("q5", "q5");
-            Node n6 = new Node("q6", "q6");
-            Node n7 = new Node("q7", "q7");
+            Node n0 = new Node(0, "q0");
+            Node n1 = new Node(1, "q1");
+            Node n2 = new Node(2, "q2");
+            Node n3 = new Node(3, "q3");          
+
+            //vindos do N0
+            graph.Edges.Add(new Edge(n0, n0, "a"));
+            graph.Edges.Add(new Edge(n0, n0, "b"));
+            graph.Edges.Add(new Edge(n0, n1, "a"));
+
+            //vindos do N1
+            graph.Edges.Add(new Edge(n1, n2, "a"));
+
+            //vindos do N2
+            graph.Edges.Add(new Edge(n2, n3, "a"));
+
+           
+
+            return graph;
+
+        }
+
+        private static Graph BuildGraph2()
+        {
+            Graph graph = new Graph();
+
+            Node n0 = new Node(0, "q0");
+            Node n1 = new Node(1, "q1");
+            Node n2 = new Node(2, "q2");
+            Node n3 = new Node(3, "q3");
+
+            //vindos do N0
+            graph.Edges.Add(new Edge(n0, n1, "a"));
+            
+
+            //vindos do N1
+            graph.Edges.Add(new Edge(n1, n0, "b"));
+            graph.Edges.Add(new Edge(n1, n2, "b"));
+
+            //vindos do N2
+            graph.Edges.Add(new Edge(n2, n0, "a"));
+
+
+
+            return graph;
+
+        }
+
+        private static Graph BuildGraph1()
+        {
+            Graph graph = new Graph();
+
+            Node n0 = new Node(0, "q0");
+            Node n1 = new Node(1, "q1");
+            Node n2 = new Node(2, "q2");
+            Node n3 = new Node(3, "q3");
+            Node n4 = new Node(4, "q4");
+            Node n5 = new Node(5, "q5");
+            Node n6 = new Node(6, "q6");
+            Node n7 = new Node(7, "q7");
 
             //vindos do N0
             graph.Edges.Add(new Edge(n0, n0, "a"));

@@ -1,6 +1,7 @@
 ﻿using LFA_project3.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LFA_project3.Model
@@ -18,6 +19,18 @@ namespace LFA_project3.Model
             Character = character;
             StateFrom = stateFrom;
             States = states;
+        }
+
+        public string GetFormattedState()
+        {
+            return String.Join(",", States.OrderBy(v => v.ID).Select(k => k.Value));
+        }
+
+        public override string ToString()
+        {        
+
+            return $"({StateFrom.Value},{Character} = {String.Join(",", States.OrderBy(v => v.ID).Select(k => k.Value))})";          
+
         }
     }
 }
