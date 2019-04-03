@@ -8,29 +8,29 @@ namespace LFA_project3.Model
 {
     public class Closure
     {
+        #region Properties
         public Node StateFrom { get; private set; }
 
         public string Character { get; private set; }
-        //estados que chego consumindo esse estado corrente (state from)
         public List<Node> States { get; private set; }
-
+        #endregion
+        #region Constructor 
         public Closure(Node stateFrom, List<Node> states, string character = "")
         {
             Character = character;
             StateFrom = stateFrom;
             States = states;
         }
-
+        #endregion
+        #region Public Methods 
         public string GetFormattedState()
         {
             return String.Join(",", States.OrderBy(v => v.ID).Select(k => k.Value));
         }
+        #endregion
+        #region Overrides
+        public override string ToString() => $"({StateFrom.Value},{Character} = {String.Join(",", States.OrderBy(v => v.ID).Select(k => k.Value))})";
 
-        public override string ToString()
-        {        
-
-            return $"({StateFrom.Value},{Character} = {String.Join(",", States.OrderBy(v => v.ID).Select(k => k.Value))})";          
-
-        }
+        #endregion
     }
 }

@@ -10,15 +10,15 @@ namespace LFA_project3.Tests
         public static IEnumerable<object[]> AFDs =>
         new List<object[]>
         {
-           new object[]{GenerateAFNToAFDGraph()["AFN1"],new string []{"a","b" },ExpectedClosures()["AFN1"] },
+           new object[]{GenerateAFNToAFDGraph()["AFN1"], ExpectedClosures()["AFN1"], ExpectedClosures()["AFN1Table"] },
            //new object[]{GenerateAFNToAFDGraph()["AFN2"],ExpectedClosures()["AFN2"] },
            //new object[]{GenerateAFEToAFDGraph()["AFE1"],new string[] { "a", "b" } ,ExpectedClosures()["AFE1"] }
 
-        };        
+        };
 
         #region Closures
 
-        private static Dictionary<string,List<Closure>> ExpectedClosures()
+        private static Dictionary<string, List<Closure>> ExpectedClosures()
         {
             Dictionary<string, List<Closure>> closures = new Dictionary<string, List<Closure>>();
 
@@ -27,27 +27,79 @@ namespace LFA_project3.Tests
                     new Closure(CreateNode(0,"s"),
                     new List<Node>{
                         CreateNode(0,"q")
-                    }),
+                    }, ""),
                     new Closure(CreateNode(1,"s"),
                     new List<Node>{
                         CreateNode(0,"q"),
                         CreateNode(1,"q")
-                    }),
+                    },"a"),
                     new Closure(CreateNode(2,"s"),
                     new List<Node>{
                         CreateNode(0,"q"),
                         CreateNode(1,"q"),
                         CreateNode(2,"q")
-                    }),
+                    },"a"),
                     new Closure(CreateNode(3,"s"),
                     new List<Node>{
                         CreateNode(0,"q"),
                         CreateNode(1,"q"),
                         CreateNode(2,"q"),
                         CreateNode(3,"q")
-                    })
+                    },"a")
                 });
 
+            closures.Add("AFN1Table",
+               new List<Closure> {
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q")
+                    }, "a"),
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q")
+                    }, "b"),                   
+
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q")
+
+                    }, "a"),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q")
+                    }, "b"),
+
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q")
+
+                    }, "a"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q")
+                    }, "b"),
+
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q")
+
+                    }, "a"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q")
+                    }, "b"),
+
+               });
+               
             return closures;
 
         }
@@ -58,7 +110,7 @@ namespace LFA_project3.Tests
         }
         #region AFD Graphs
 
-        private static Dictionary<string,AFD> GenerateAFEToAFDGraph()
+        private static Dictionary<string, AFD> GenerateAFEToAFDGraph()
         {
             Dictionary<string, AFD> dictionary = new Dictionary<string, AFD>();
 
@@ -99,7 +151,7 @@ namespace LFA_project3.Tests
             //vindos do N6
             graph.Edges.Add(new Edge(n6, n7, "c"));
 
-            dictionary.Add("AFE1", new AFD(graph));
+            dictionary.Add("AFE1", new AFD(graph, new string[] { "a", "b", "c" }));
 
             return dictionary;
         }
@@ -126,7 +178,7 @@ namespace LFA_project3.Tests
             //vindos do N2
             graph1.Edges.Add(new Edge(n2, n3, "a"));
 
-            dictionary.Add("AFN1", new AFD(graph1));
+            dictionary.Add("AFN1", new AFD(graph1, new string[] { "a", "b" }));
 
             Graph graph2 = new Graph();
 
@@ -146,7 +198,7 @@ namespace LFA_project3.Tests
             //vindos do N2
             graph2.Edges.Add(new Edge(n2, n0, "a"));
 
-            dictionary.Add("AFN2", new AFD(graph2));
+            dictionary.Add("AFN2", new AFD(graph2, new string[] { "a", "b" }));
 
             return dictionary;
 
