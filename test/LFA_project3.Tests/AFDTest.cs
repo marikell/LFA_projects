@@ -32,28 +32,26 @@ namespace LFA_project3.Tests
                         .ToString());
                 }
             }
-
         }
 
-        [Fact]
-        public void ShouldGetInitialClosure()
+        [Theory]
+        [MemberData(nameof(AFDData.AFDGraph), MemberType = typeof(AFDData))]
+        public void ShouldGenerateAFDGraph(List<Closure> expectedTable, Graph expectedGraph)
         {
-            throw new Exception("Test not implemented!");
+            Graph graph = Convert.AFEToAFD(expectedTable);
+
+            int equalEdges = 0;
+
+            foreach (Edge edgeExpected in expectedGraph.Edges)
+            {
+                if(!graph.Edges.Any(o => o.NodeFrom.ID == edgeExpected.NodeFrom.ID && o.NodeTo.ID == edgeExpected.NodeTo.ID && edgeExpected.Cost == o.Cost))
+                {
+                    equalEdges++;
+                }
+            }
+
+            Assert.Equal(expectedGraph.Edges.Count, equalEdges);
         }
-
-        [Fact]
-        public void ShouldFindClosureByState()
-        {
-            throw new Exception("Test not implemented!");
-        }
-
-        [Fact]
-        public void ShouldGetState()
-        {
-            throw new Exception("Test not implemented!");
-        }
-
-
-
+        
     }
 }

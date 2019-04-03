@@ -7,14 +7,55 @@ namespace LFA_project3.Tests
 {
     public class AFDData
     {
+        #region Member Data
         public static IEnumerable<object[]> AFDs =>
         new List<object[]>
         {
-           new object[]{GenerateAFNToAFDGraph()["AFN1"], ExpectedClosures()["AFN1"], ExpectedClosures()["AFN1Table"] },
-           //new object[]{GenerateAFNToAFDGraph()["AFN2"],ExpectedClosures()["AFN2"] },
-           //new object[]{GenerateAFEToAFDGraph()["AFE1"],new string[] { "a", "b" } ,ExpectedClosures()["AFE1"] }
-
+           new object[]{ GenerateAFNToAFDGraph()["AFN1"], ExpectedClosures()["AFN1"], ExpectedClosures()["AFN1Table"] },
+           new object[]{ GenerateAFEToAFDGraph()["AFE1"], ExpectedClosures()["AFE1"], ExpectedClosures()["AFE1Table"] },
+           new object[]{ GenerateAFNToAFDGraph()["AFN2"],ExpectedClosures()["AFN2"], ExpectedClosures()["AFN2Table"] }
         };
+
+        public static IEnumerable<object[]> AFDGraph =>
+        new List<object[]>
+        {
+            new object[]{ ExpectedClosures()["AFN1Table"], GetGraphs()["AFN1Graph"] }
+        };
+
+        #endregion
+
+        #region Graphs
+
+        public static Dictionary<string, Graph> GetGraphs()
+        {
+            Dictionary<string, Graph> dictionary = new Dictionary<string, Graph>();
+
+            Graph graph = new Graph();
+
+            Node n0 = new Node(0, "s");
+            Node n1 = new Node(1, "s");
+            Node n2 = new Node(2, "s");
+            Node n3 = new Node(3, "s");
+
+            graph.Edges.Add(new Edge(n0, n0, "b"));
+            graph.Edges.Add(new Edge(n0, n1, "a"));
+
+            graph.Edges.Add(new Edge(n1, n0, "b"));
+            graph.Edges.Add(new Edge(n1, n2, "a"));
+
+            graph.Edges.Add(new Edge(n2, n0, "b"));
+            graph.Edges.Add(new Edge(n2, n3, "a"));
+
+            graph.Edges.Add(new Edge(n3, n3, "a"));
+            graph.Edges.Add(new Edge(n3, n0, "b"));
+
+            dictionary.Add("AFN1Graph", graph);
+
+            return dictionary;
+
+        }
+
+        #endregion
 
         #region Closures
 
@@ -58,7 +99,7 @@ namespace LFA_project3.Tests
                     new Closure(CreateNode(0,"s"),
                     new List<Node>{
                         CreateNode(0,"q")
-                    }, "b"),                   
+                    }, "b"),
 
                     new Closure(CreateNode(1,"s"),
                     new List<Node>{
@@ -99,7 +140,316 @@ namespace LFA_project3.Tests
                     }, "b"),
 
                });
-               
+
+            closures.Add("AFE1",
+              new List<Closure> {
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q")
+                    }, ""),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    },"a"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(3,"q")
+                    },"b"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q")
+                    },"c"),
+                    new Closure(CreateNode(4,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q")
+                    },"b"),
+                    new Closure(CreateNode(5,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                        CreateNode(6,"q")
+                    },"c"),
+                    new Closure(CreateNode(6,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                        CreateNode(6,"q"),
+                        CreateNode(7,"q")
+                    },"c")
+              });
+
+            closures.Add("AFE1Table",
+               new List<Closure> {
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                    },"b"),
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                    },"c"),
+
+                   new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                       CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                    },"b"),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                    },"c"),
+
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                       CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    },"b"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                    },"c"),
+
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                       CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q")
+                    },"b"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                        CreateNode(6,"q"),
+                    },"c"),
+
+                    new Closure(CreateNode(4,"s"),
+                    new List<Node>{
+                       CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(4,"s"),
+                    new List<Node>{
+                       CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    },"b"),
+                    new Closure(CreateNode(4,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                    },"c"),
+
+                    new Closure(CreateNode(5,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(5,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                    },"b"),
+                    new Closure(CreateNode(5,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                        CreateNode(6,"q"),
+                        CreateNode(7,"q"),
+                    },"c"),
+
+                    new Closure(CreateNode(6,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(7,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(6,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(3,"q"),
+                        CreateNode(4,"q"),
+                    },"b"),
+                    new Closure(CreateNode(6,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                        CreateNode(2,"q"),
+                        CreateNode(4,"q"),
+                        CreateNode(5,"q"),
+                        CreateNode(6,"q"),
+                        CreateNode(7,"q"),
+                    },"c"),
+
+               });
+
+            closures.Add("AFN2",
+             new List<Closure> {
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                    }, ""),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(1,"q"),
+                    },"a"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(2,"q"),
+                    },"b"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q"),
+                    },"a")
+             });
+
+            closures.Add("AFN2Table",
+              new List<Closure>
+              {
+                  new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                        CreateNode(1,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(0,"s"),
+                    new List<Node>{
+                    }, "b"),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                    }, "a"),
+                    new Closure(CreateNode(1,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(2,"q")
+                    }, "b"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(1,"q")
+                    }, "a"),
+                    new Closure(CreateNode(2,"s"),
+                    new List<Node>{
+                    }, "b"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(1,"q"),
+                    }, "a"),
+                    new Closure(CreateNode(3,"s"),
+                    new List<Node>{
+                        CreateNode(0,"q"),
+                        CreateNode(2,"q")
+                    }, "b"),
+              });
+
+
             return closures;
 
         }
@@ -108,7 +458,7 @@ namespace LFA_project3.Tests
         {
             return new Node(id, $"{s}{id}");
         }
-        #region AFD Graphs
+        #region AFD Initial Graphs
 
         private static Dictionary<string, AFD> GenerateAFEToAFDGraph()
         {

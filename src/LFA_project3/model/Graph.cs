@@ -13,13 +13,16 @@ namespace LFA_project3.Model
             Edges = new List<Edge>();
         }
 
-        public StringBuilder ShowGraph()
+        public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            Edges.ForEach(o => { stringBuilder.AppendLine($"FROM: {o.NodeFrom.ID} TO: {o.NodeTo.ID} CONSUMING {o.Cost}"); });
+            foreach (var edge in Edges)
+            {
+                stringBuilder.AppendLine($"{edge.NodeFrom.Value} -----> {edge.NodeTo.Value} ({edge.Cost})");
+            }
 
-            return stringBuilder;
+            return stringBuilder.ToString();
         }
     }
 }

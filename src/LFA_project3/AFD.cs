@@ -77,8 +77,8 @@ namespace LFA_project3
 
                 foreach (string character in _variables)
                 {
-                    Closure ca = GetState(stateProcessing, character);               
-                    
+                    Closure ca = GetState(stateProcessing, character);
+
                     if (_statesToProcess.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null
                         && States.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null
                         && ca.States.Count > 0)
@@ -103,7 +103,8 @@ namespace LFA_project3
 
             foreach (var f in fromState.States)
             {
-                states.AddRange(_graph.Edges.Where(o => o.NodeFrom.ID == f.ID && (o.Cost == "&" || o.Cost == character)).Select(x => x.NodeTo));
+                var kk = _graph.Edges.Where(o => o.NodeFrom.ID == f.ID && (o.Cost == "&" || o.Cost == character)).ToList();
+                states.AddRange(kk.Select(x => x.NodeTo));
             }
 
             List<Node> distinctListStates = states.OrderBy(o => o.ID).Distinct(new NodeEqualityComparer()).ToList();
@@ -113,7 +114,7 @@ namespace LFA_project3
             Closure existingState = FindClosureByState(distinctListStates, States);
 
             //se não encontrou nos estados adicionados, pode estar nos estados que estão para processar.
-            if(existingState == null)
+            if (existingState == null)
             {
                 existingState = FindClosureByState(distinctListStates, _statesToProcess.ToList());
             }

@@ -11,15 +11,19 @@ namespace LFA_project3
     {
         static void Main(string[] args)
         {
+            Graph graphInitial = BuildGraph();
             //Criação do automato AFE inicial
-            AFD afd = new AFD(BuildGraph(), new string[] { "a", "b", "c" });
+            AFD afd = new AFD(graphInitial, new string[] { "a", "b", "c" });
+
+            Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
+
             //q0 como estado inicial
             afd.GenerateAFDSteps(new Node(0, "q0"));
 
             //Tabela completa dos closures
             var table = afd.GetClosureTable();
 
-            Console.WriteLine("Passo a passo do DFAEdge\n");
+            Console.WriteLine("\nPasso a passo do DFAEdge\n");
 
             foreach (var closure in table)
             {
@@ -33,10 +37,9 @@ namespace LFA_project3
                 Console.WriteLine(closure.ToString());
             }
 
-            Console.WriteLine("\nAutômato Gerado");
+            Console.WriteLine("\nAutômato Gerado\n");           
 
-            //TODO DESENHO DO AUTÔMATO GERADO
-
+            Console.WriteLine(Convert.AFEToAFD(afd.GetClosureTable()).ToString());
 
             Console.ReadKey();
         }
