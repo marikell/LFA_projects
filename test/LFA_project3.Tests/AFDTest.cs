@@ -36,7 +36,7 @@ namespace LFA_project3.Tests
 
         [Theory]
         [MemberData(nameof(AFDData.AFDGraph), MemberType = typeof(AFDData))]
-        public void ShouldGenerateAFDGraph(List<Closure> expectedTable, Graph expectedGraph)
+        public void ShouldGenerateAFDGraph(List<Edge> expectedTable, Graph expectedGraph)
         {
             Graph graph = Convert.AFEToAFD(expectedTable);
 

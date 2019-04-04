@@ -16,10 +16,14 @@ namespace LFA_project3.Model
 
         public Edge(Node nodeFrom, Node nodeTo, string cost)
         {
-            // ID = string.Format("From:{0} // To: {1} // Cost: {2}", nodeFrom.ID, nodeTo.ID, cost);
             NodeFrom = nodeFrom;
             NodeTo = nodeTo;
             Cost = cost;
+        }
+
+        public override string ToString()
+        {
+            return $"{NodeFrom.Value} -------({Cost})----> {NodeTo.Value}";
         }
     }
 }

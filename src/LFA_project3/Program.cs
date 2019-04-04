@@ -18,28 +18,33 @@ namespace LFA_project3
             Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
 
             //q0 como estado inicial
-            afd.GenerateAFDSteps(new Node(0, "q0"));
+            afd.GenerateAFDSteps(new Node(0, "q0"));         
 
-            //Tabela completa dos closures
-            var table = afd.GetClosureTable();
-
-            Console.WriteLine("\nPasso a passo do DFAEdge\n");
-
-            foreach (var closure in table)
-            {
-                Console.WriteLine(closure.ToString());
-            }
-
-            Console.WriteLine("\nPassos Finais\n");
+            Console.WriteLine("\nEstados gerados na conversão do autômato\n");
 
             foreach (var closure in afd.States)
             {
                 Console.WriteLine(closure.ToString());
             }
 
-            Console.WriteLine("\nAutômato Gerado\n");           
+            Console.WriteLine("\nAperte uma tecla para exibir o autômato...");
 
-            Console.WriteLine(Convert.AFEToAFD(afd.GetClosureTable()).ToString());
+            Console.ReadKey();
+
+            Console.Clear();
+
+            Console.WriteLine("\nEdges do autômato final\n");
+
+            foreach (var edge in Convert.GetClosureWithStates(afd.GetClosureTable(), afd.States))
+            {
+                Console.WriteLine(edge.ToString());
+            }
+
+            Console.WriteLine("\nAutômato Gerado\n");
+
+            //TODO IMPLEMENTAR O DESENHO DO AUTÔMATO
+
+            //Console.WriteLine(Convert.AFEToAFD(afd.GetClosureTable()).ToString());
 
             Console.ReadKey();
         }

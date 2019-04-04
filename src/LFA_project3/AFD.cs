@@ -111,12 +111,12 @@ namespace LFA_project3
 
             _closureTable.Add(new Closure(fromState.StateFrom, distinctListStates, character));
 
-            Closure existingState = FindClosureByState(distinctListStates, States);
+            Closure existingState = ClosureUtils.FindClosureByState(distinctListStates, States);
 
             //se não encontrou nos estados adicionados, pode estar nos estados que estão para processar.
             if (existingState == null)
             {
-                existingState = FindClosureByState(distinctListStates, _statesToProcess.ToList());
+                existingState = ClosureUtils.FindClosureByState(distinctListStates, _statesToProcess.ToList());
             }
 
             if (existingState == null)
@@ -128,17 +128,7 @@ namespace LFA_project3
         }
 
 
-        /// <summary>
-        /// Retorna o closure, caso o mesmo já tenha sido gerado.
-        /// </summary>
-        /// <param name="closure"></param>
-        /// <returns></returns>
-        public Closure FindClosureByState(List<Node> states, List<Closure> searchClosures)
-        {
-            string argumentStates = String.Join(",", states.OrderBy(v => v.ID).Select(k => k.Value));
-
-            return searchClosures.FirstOrDefault(o => o.GetFormattedState() == argumentStates);
-        }
+       
 
         #endregion
         #region Private Methods
