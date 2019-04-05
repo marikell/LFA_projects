@@ -121,9 +121,9 @@ namespace LFA_project3
 
         private void MakeExpression(string c)
         {
-            var node = CreateNode(c);
+            var node = CreateNode();
 
-            var edgeNullToNode = CreatePath(null, node, node.Value);
+            var edgeNullToNode = CreatePath(null, node, c);
             var edgeNodeToNull = CreatePath(node, null);
 
             AuxStack.Push(new Tuple<Edge, Edge>(edgeNullToNode, edgeNodeToNull));
@@ -157,7 +157,7 @@ namespace LFA_project3
         public void MakeT()
         {
             var lastExpression = AuxStack.Pop();
-            MakeExpression(lastExpression.Item1.NodeTo.Value);
+            MakeExpression(lastExpression.Item1.Cost);
             AuxStack.Push(lastExpression);
             MakeA();
             MakeAdd();
@@ -195,7 +195,8 @@ namespace LFA_project3
 
         private Node CreateNode(string value = "&")
         {
-            return new Node(Count++, value);
+            int newInt = Count++;
+            return new Node(newInt, String.Format("Q{0}", newInt));
         }
 
         private Edge CreatePath(Node nodeA, Node nodeB, string cost = "&")

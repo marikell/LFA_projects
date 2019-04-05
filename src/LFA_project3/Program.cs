@@ -11,36 +11,48 @@ namespace LFA_project3
     {
         static void Main(string[] args)
         {
-            Graph graphInitial = BuildGraph();
-            //Criação do automato AFE inicial
-            AFD afd = new AFD(graphInitial, new string[] { "a", "b", "c" });
 
-            Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
 
-            //q0 como estado inicial
-            afd.GenerateAFDSteps(new Node(0, "q0"));         
+            var t = new Thompson("AB|*");
+            t.Resolve();
+            var txt = t.PrintGraph().ToArray();
 
-            Console.WriteLine("\nEstados gerados na conversão do autômato\n");
-
-            foreach (var closure in afd.States)
+            foreach (var i in txt)
             {
-                Console.WriteLine(closure.ToString());
+
+                Console.WriteLine(i);
             }
 
-            Console.WriteLine("\nAperte uma tecla para exibir o autômato...");
+            // Graph graphInitial = BuildGraph();
+            // //Criação do automato AFE inicial
+            // AFD afd = new AFD(graphInitial, new string[] { "a", "b", "c" });
 
-            Console.ReadKey();
+            // Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
 
-            Console.Clear();
+            // //q0 como estado inicial
+            // afd.GenerateAFDSteps(new Node(0, "q0"));         
 
-            Console.WriteLine("\nEdges do autômato final\n");
+            // Console.WriteLine("\nEstados gerados na conversão do autômato\n");
 
-            foreach (var edge in Convert.GetClosureWithStates(afd.GetClosureTable(), afd.States))
-            {
-                Console.WriteLine(edge.ToString());
-            }
+            // foreach (var closure in afd.States)
+            // {
+            //     Console.WriteLine(closure.ToString());
+            // }
 
-            Console.WriteLine("\nAutômato Gerado\n");
+            // Console.WriteLine("\nAperte uma tecla para exibir o autômato...");
+
+            // Console.ReadKey();
+
+            // Console.Clear();
+
+            // Console.WriteLine("\nEdges do autômato final\n");
+
+            // foreach (var edge in Convert.GetClosureWithStates(afd.GetClosureTable(), afd.States))
+            // {
+            //     Console.WriteLine(edge.ToString());
+            // }
+
+            // Console.WriteLine("\nAutômato Gerado\n");
 
             //TODO IMPLEMENTAR O DESENHO DO AUTÔMATO
 
