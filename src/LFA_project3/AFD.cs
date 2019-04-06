@@ -10,125 +10,179 @@ namespace LFA_project3
     public class AFD
     {
         #region Properties/Fields
-        private Graph _graph;
-
-        private Queue<Closure> _statesToProcess;
+        public Graph Graph;
         public List<Closure> States { get; set; }
+        public List<Closure> NewStates { get; set; }
 
         private int _closureCount;
+        private int _nodeCount;
 
         private string[] _variables;
-
-        private List<Closure> _closureTable;
+        private List<Node> _nodes;
         #endregion
         #region Constructor
         public AFD(Graph graph, string[] variables)
         {
             _closureCount = 0;
-            _graph = graph;
+            _nodeCount = 0;
+            Graph = graph;
             _variables = variables;
-            _closureTable = new List<Closure>();
-            _statesToProcess = new Queue<Closure>();
+            _nodes = new List<Node>();
             States = new List<Closure>();
+            NewStates = new List<Closure>();
         }
 
         #endregion
         #region Public Methods
 
-        public List<Closure> GetClosureTable()
+
+        private List<Node> getNodesInPath(List<Node> list, Node node, string costSearch = "&")
         {
-            return _closureTable.OrderBy(o => o.StateFrom.ID).ToList();
-        }
 
-        /// <summary>
-        /// Retorna a closure inicial do grafo baseado no estado inicial..
-        /// </summary>
-        /// <returns></returns>
-        public Closure GetInitialClosure(Node nodeStart)
-        {
-            Closure closure = new Closure(new Node(nodeStart.ID, $"s{nodeStart.ID}"), _graph.Edges
-                                                      .Where(o => o.NodeFrom.ID == nodeStart.ID && o.Cost == "&")
-                                                      .Select(x => x.NodeTo)
-                                                      .Distinct()
-                                                      .ToList());
-
-            if (closure.States.FirstOrDefault(o => o.ID == nodeStart.ID) == null) { closure.States.Add(nodeStart); }
-
-            return closure;
-        }
-
-        /// <summary>
-        /// Método que retorna todos os DFAEdges para a criação do autômato AFD a partir do AFE.
-        /// </summary>
-        /// <param name="nodeStart"></param>
-        /// <param name="variables"></param>
-
-        public void GenerateAFDSteps(Node nodeStart)
-        {
-            Closure initialClosure = GetInitialClosure(nodeStart);
-
-            _statesToProcess.Enqueue(initialClosure);
-
-            while (_statesToProcess.Count > 0)
+            if (list == null)
             {
-                Closure stateProcessing = _statesToProcess.Dequeue();
+                list = new List<Node>() { };
+            }
 
-                States.Add(stateProcessing);
+            if (!list.Contains(node) && costSearch == "&")
+            {
+                list.Add(node);
+            }
 
-                foreach (string character in _variables)
+            foreach (var edge in Graph.GetAllEdgesWithZeroCostByNodeFrom(node.Value, costSearch))
+            {
+                if (edge.NodeTo != null && !list.Contains(edge.NodeTo) && edge.Cost == costSearch)
                 {
-                    Closure ca = GetState(stateProcessing, character);
-
-                    if (_statesToProcess.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null
-                        && States.FirstOrDefault(o => o.StateFrom.ID == ca.StateFrom.ID) == null
-                        && ca.States.Count > 0)
-                    {
-                        _statesToProcess.Enqueue(ca);
-                        _closureCount++;
-                    }
+                    var nodes = getNodesInPath(list, edge.NodeTo);
+                    list.Concat(nodes);
                 }
             }
+
+            return list;
         }
 
-        /// <summary>
-        /// Método que dado um estado, retorna todos os estados que alcança consumindo determinado caracter.
-        /// </summary>
-        /// <param name="fromState"></param>
-        /// <param name="character"></param>
-        /// <returns></returns>
-
-        public Closure GetState(Closure fromState, string character)
+        public Closure GetInitialClosure()
         {
-            List<Node> states = new List<Node>();
 
-            foreach (var f in fromState.States)
+            Edge firstEdge = Graph.Edges.First(o => o.NodeFrom.Start);
+            var nodelist = getNodesInPath(null, firstEdge.NodeFrom);
+
+            var newClosure = new Closure(firstEdge.NodeTo, nodelist, String.Format("S{0}", _closureCount++));
+
+            _nodes.Add(new Node(_nodeCount++, newClosure.Name,
+             true, newClosure.States.FirstOrDefault(n => n.End) != null));
+            return newClosure;
+        }
+
+        public void Resolve()
+        {
+
+            var initial = GetInitialClosure();
+
+            States = new List<Closure>() { initial };
+            NewStates = new List<Closure>() { initial };
+            List<Edge> newEdges = new List<Edge>();
+
+            while (NewStates.Count > 0)
             {
-                var kk = _graph.Edges.Where(o => o.NodeFrom.ID == f.ID && (o.Cost == "&" || o.Cost == character)).ToList();
-                states.AddRange(kk.Select(x => x.NodeTo));
+
+                var closure = NewStates[0];
+                var closureNode = getOrCreateNodeClosure(null, closure.States);
+                NewStates.RemoveAt(0);
+
+                foreach (var v in _variables)
+                {
+                    List<Node> newState = resolveClosure(closure, v);
+
+                    if (newState.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    var newNode = getOrCreateNodeClosure(null, newState);
+
+                    newEdges.Add(new Edge(closureNode, newNode, v));
+                }
             }
 
-            List<Node> distinctListStates = states.OrderBy(o => o.ID).Distinct(new NodeEqualityComparer()).ToList();
 
-            _closureTable.Add(new Closure(fromState.StateFrom, distinctListStates, character));
 
-            Closure existingState = ClosureUtils.FindClosureByState(distinctListStates, States);
+            Graph = new Graph();
+            Graph.Edges = newEdges;
 
-            //se não encontrou nos estados adicionados, pode estar nos estados que estão para processar.
-            if (existingState == null)
+        }
+
+        public void PrintGraph()
+        {
+            Console.WriteLine(Graph.ToString());
+        }
+
+        private Node getOrCreateNodeClosure(Node nodeFrom, List<Node> stateList)
+        {
+
+            var closure = States.FirstOrDefault(n => n.verifyIfStatesIsEqual(stateList));
+
+            if (closure == null)
             {
-                existingState = ClosureUtils.FindClosureByState(distinctListStates, _statesToProcess.ToList());
+
+                bool isFinal = false;
+
+                // É final ?
+                if (stateList.FirstOrDefault(n => n.End) != null)
+                {
+                    isFinal = true;
+                }
+
+                var newClosure = new Closure(nodeFrom, stateList, String.Format("S{0}", _closureCount++));
+                States.Add(newClosure);
+                NewStates.Add(newClosure);
+                var newNode = new Node(_nodeCount++, newClosure.Name, false, isFinal);
+                _nodes.Add(newNode);
+                return newNode;
             }
 
-            if (existingState == null)
+            return _nodes.First(q => q.Value == closure.Name);
+
+        }
+
+        private List<Node> resolveClosure(Closure closure, string letter)
+        {
+
+            var returnNodes = new List<Node>();
+
+            foreach (Node n in closure.States)
             {
-                return new Closure(new Node(GetNewID(), $"s{GetNewID()}"), states.Distinct(new NodeEqualityComparer()).ToList(), character);
+                var emptyPathNodes = getNodesInPath(null, n);
+
+                foreach (Node emptyNodePath in emptyPathNodes)
+                {
+                    var newNodes = getNodesInPath(null, emptyNodePath, letter);
+                    returnNodes = AddOnNodeListIfNotExist(returnNodes, newNodes);
+                }
             }
 
-            return existingState;
+            return returnNodes.OrderBy(q => q.Value).ToList();
+
+
         }
 
 
-       
+        private List<Node> AddOnNodeListIfNotExist(List<Node> original, List<Node> newValues)
+        {
+
+            foreach (Node n in newValues)
+            {
+                if (!original.Contains(n))
+                {
+                    original.Add(n);
+                }
+            }
+
+            return original;
+
+        }
+
+
 
         #endregion
         #region Private Methods

@@ -34,9 +34,7 @@ namespace LFA_project3.Tests
             "FROM: Q19 // TO: Q20 // COST: &",
             "FROM: Q21 // TO: Q23 // COST: &",
             "FROM: Q19 // TO: Q21 // COST: &",
-            "FROM: Q18 // TO: Q20 // COST: &",
-            "FROM: - // TO: Q22 // COST: &",
-            "FROM: Q23 // TO: - // COST: &",})]
+            "FROM: Q18 // TO: Q20 // COST: &"})]
 
         public void ShouldResolveThompsonGraph(string posfixedExp, string[] expectedOutput)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LFA_project3.Model
@@ -17,12 +18,60 @@ namespace LFA_project3.Model
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            foreach (var edge in Edges)
+            stringBuilder.AppendLine("-------");
+            stringBuilder.AppendLine($"Start Node: {GetStartNode().Value}");
+            stringBuilder.AppendLine("-------");
+            stringBuilder.AppendLine($"End Node(s): {String.Join(",", GetFinalNodes())}");
+            stringBuilder.AppendLine("-------");
+
+            var edgesOrdered = Edges.OrderBy(e => e.NodeFrom.Value).ToList();
+
+
+            foreach (var edge in edgesOrdered)
             {
-                stringBuilder.AppendLine($"{edge.NodeFrom.Value} -----> {edge.NodeTo.Value} ({edge.Cost})");
+                var fromValue = edge.NodeFrom == null ? "-" : edge.NodeFrom.Value;
+                var toValue = edge.NodeTo == null ? "-" : edge.NodeTo.Value;
+                stringBuilder.AppendLine($"{fromValue} -----> {toValue} ({edge.Cost})");
             }
 
             return stringBuilder.ToString();
+        }
+
+        public Node GetStartNode()
+        {
+            return Edges.First(q => q.NodeFrom.Start).NodeFrom;
+        }
+
+        public List<Node> GetFinalNodes()
+        {
+
+            List<Node> returnList = new List<Node>();
+
+            foreach (Edge e in Edges)
+            {
+                if (e.NodeTo.End && !returnList.Contains(e.NodeTo))
+                {
+                    returnList.Add(e.NodeTo);
+                }
+
+                if (e.NodeFrom.End && !returnList.Contains(e.NodeFrom))
+                {
+                    returnList.Add(e.NodeFrom);
+                }
+            }
+
+            return returnList;
+        }
+
+        public List<Edge> GetAllEdgesWithZeroCostByNodeTo(string value, string cost)
+        {
+            return Edges.Where(q => q.NodeTo != null && q.NodeTo.Value == value && q.Cost == cost).ToList();
+        }
+
+
+        public List<Edge> GetAllEdgesWithZeroCostByNodeFrom(string value, string cost)
+        {
+            return Edges.Where(q => q.NodeFrom != null && q.NodeFrom.Value == value && q.Cost == cost).ToList();
         }
     }
 }

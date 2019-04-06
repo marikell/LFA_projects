@@ -8,7 +8,7 @@ namespace LFA_project3
     public class Thompson
     {
         private string Text { get; set; }
-        private Graph Graph { get; set; }
+        public Graph Graph { get; set; }
         private Stack<Tuple<Edge, Edge>> AuxStack { get; set; }
         private int Count { get; set; }
 
@@ -187,6 +187,30 @@ namespace LFA_project3
                 else
                 {
                     MakeExpression(c.ToString());
+                }
+
+            }
+
+            SetEndAndStart();
+
+        }
+
+        private void SetEndAndStart()
+        {
+
+            for (int i = 0; i < Graph.Edges.Count; i++)
+            {
+
+                if (Graph.Edges[i].NodeFrom == null)
+                {
+                    Graph.Edges[i].NodeTo.Start = true;
+                    Graph.Edges.RemoveAt(i);
+                }
+
+                if (Graph.Edges[i].NodeTo == null)
+                {
+                    Graph.Edges[i].NodeFrom.End = true;
+                    Graph.Edges.RemoveAt(i);
                 }
 
             }

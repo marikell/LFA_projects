@@ -1,5 +1,6 @@
 ﻿using LFA_project3.model;
 using LFA_project3.Model;
+using LFA_project3.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,95 +13,26 @@ namespace LFA_project3
         static void Main(string[] args)
         {
 
+            Console.WriteLine("Escreva o alfabeto separado por virgula: ");
+            string af = Console.ReadLine();
 
-            var t = new Thompson("AB|*");
+            Console.WriteLine("Escreva uma ER: ");
+            string er = Console.ReadLine();
+
+            Thompson t = new Thompson(ConversionUtils.ToPostFix(er, af.Split(',').ToList()));
             t.Resolve();
-            var txt = t.PrintGraph().ToArray();
+            Graph graphInitial = t.Graph;
+            
+            AFD afd = new AFD(graphInitial, af.Split(','));
 
-            foreach (var i in txt)
-            {
+            Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
 
-                Console.WriteLine(i);
-            }
-
-            // Graph graphInitial = BuildGraph();
-            // //Criação do automato AFE inicial
-            // AFD afd = new AFD(graphInitial, new string[] { "a", "b", "c" });
-
-            // Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
-
-            // //q0 como estado inicial
-            // afd.GenerateAFDSteps(new Node(0, "q0"));         
-
-            // Console.WriteLine("\nEstados gerados na conversão do autômato\n");
-
-            // foreach (var closure in afd.States)
-            // {
-            //     Console.WriteLine(closure.ToString());
-            // }
-
-            // Console.WriteLine("\nAperte uma tecla para exibir o autômato...");
-
-            // Console.ReadKey();
-
-            // Console.Clear();
-
-            // Console.WriteLine("\nEdges do autômato final\n");
-
-            // foreach (var edge in Convert.GetClosureWithStates(afd.GetClosureTable(), afd.States))
-            // {
-            //     Console.WriteLine(edge.ToString());
-            // }
-
-            // Console.WriteLine("\nAutômato Gerado\n");
-
-            //TODO IMPLEMENTAR O DESENHO DO AUTÔMATO
-
-            //Console.WriteLine(Convert.AFEToAFD(afd.GetClosureTable()).ToString());
+            Console.WriteLine("AFD Equivalente: ");
+            afd.Resolve();
+            afd.PrintGraph();
 
             Console.ReadKey();
         }
 
-        private static Graph BuildGraph()
-        {
-            Graph graph = new Graph();
-
-            Node n0 = new Node(0, "q0");
-            Node n1 = new Node(1, "q1");
-            Node n2 = new Node(2, "q2");
-            Node n3 = new Node(3, "q3");
-            Node n4 = new Node(4, "q4");
-            Node n5 = new Node(5, "q5");
-            Node n6 = new Node(6, "q6");
-            Node n7 = new Node(7, "q7");
-
-            //vindos do N0
-            graph.Edges.Add(new Edge(n0, n0, "a"));
-            graph.Edges.Add(new Edge(n0, n0, "b"));
-            graph.Edges.Add(new Edge(n0, n0, "c"));
-            graph.Edges.Add(new Edge(n0, n4, "&"));
-            graph.Edges.Add(new Edge(n0, n2, "&"));
-            graph.Edges.Add(new Edge(n0, n1, "&"));
-
-            //vindos do N1
-            graph.Edges.Add(new Edge(n1, n7, "a"));
-
-            //vindos do N2
-            graph.Edges.Add(new Edge(n2, n3, "b"));
-
-            //vindos do N3
-            graph.Edges.Add(new Edge(n3, n7, "b"));
-
-            //vindos do N4
-            graph.Edges.Add(new Edge(n4, n5, "c"));
-
-            //vindos do N5
-            graph.Edges.Add(new Edge(n5, n6, "c"));
-
-            //vindos do N6
-            graph.Edges.Add(new Edge(n6, n7, "c"));
-
-            return graph;
-        }
     }
 }
