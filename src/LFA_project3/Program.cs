@@ -14,16 +14,16 @@ namespace LFA_project3
         {
 
             Console.WriteLine("Escreva o alfabeto separado por virgula: ");
-            string af = Console.ReadLine();
+            string operands = Console.ReadLine();
 
             Console.WriteLine("Escreva uma ER: ");
             string er = Console.ReadLine();
 
-            Thompson t = new Thompson(ConversionUtils.ToPostFix(er, af.Split(',').ToList()));
+            Thompson t = new Thompson(ConversionUtils.ToPostFix(er, operands.Split(',').ToList()));
             t.Resolve();
             Graph graphInitial = t.Graph;
             
-            AFD afd = new AFD(graphInitial, af.Split(','));
+            AFD afd = new AFD(graphInitial, operands.Split(','));
 
             Console.WriteLine($"\nAutômato Inicial\n{graphInitial.ToString()}");
 
