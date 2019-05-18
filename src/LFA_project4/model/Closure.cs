@@ -22,6 +22,11 @@ namespace LFA_project4.Model
             StateFrom = stateFrom;
             States = states;
         }
+
+        public Closure()
+        {
+            States = new List<Node>();
+        }
         #endregion
         #region Public Methods 
         public string GetFormattedState()
