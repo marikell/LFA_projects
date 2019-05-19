@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LFA_project4
 {
-    public static class Convert
+    public static class ConvertClosure
     {
         public static List<Edge> GetClosureWithStates(List<Closure> afdTable, List<Closure> states)
         {

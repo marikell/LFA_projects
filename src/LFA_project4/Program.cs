@@ -29,9 +29,17 @@ namespace LFA_project4
             Console.WriteLine("AFD Equivalente: ");
             afd.Resolve();
             afd.PrintGraph();
+            Graph graphAfd = afd.Graph;
+
+            Console.WriteLine("AFD Minimizado: ");
+
+            AFDMinimize minimize = new AFDMinimize(graphAfd, new string[] { "a", "b" });
+
+            minimize.Resolve();
+
+            Console.WriteLine(minimize.PrintGraph());
 
             Console.ReadKey();
         }
-
     }
 }
