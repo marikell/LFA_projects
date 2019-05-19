@@ -17,53 +17,25 @@ namespace LFA_project4
             _operands = operands;
         }
 
-        public void Resolve()
+
+        public Graph Resolve()
         {
-            ResolveProgramFunction();
             _state = new MinimizeState(_afd);
+            _state.RemoveNotAcessibleNodes(_operands, _afd);
+            _state.ResolveProgramFunction(_operands);
             _state.InitTable();
             _state.Mark();
             _state.PairAnalysis(_operands);
+            _state.Union();
+            _state.Generate(_operands);
+            _state.RemoveNotAccessibleNodesFromMinimized(_operands);
+            return _state.GetMinimizedGraph();
         }
+
         public string PrintGraph()
         {
             return _afd.ToString();
         }
-        
-        public void ResolveProgramFunction()
-        {
-            Node dNode = null;
 
-            var allNodes = _afd.GetAllNodes().OrderBy(o => o.ID);
-
-            //todos os nodes
-            foreach (var node in allNodes)
-            {
-                //Pegar todos os edges que tem esse nó como From
-                var edges = _afd.Edges.Where(o => o.NodeFrom.ID == node.ID);
-
-                foreach (var operand in _operands)
-                {
-                    var edge = edges.FirstOrDefault(o => o.Cost == operand);
-
-                    if (edge != null)
-                        continue;
-
-                    if (dNode == null) { dNode = new Node(allNodes.Count(), "d", false, false); }
-                    //Conectando o D no node que não possui determinado consumido de letra
-                    _afd.Edges.Add(new Edge(node, dNode, operand));
-
-                }
-            }
-
-            if (dNode != null)
-            {
-                foreach (var operand in _operands)
-                {
-                    _afd.Edges.Add(new Edge(dNode, dNode, operand));
-                }
-            }
-
-        }
     }
 }

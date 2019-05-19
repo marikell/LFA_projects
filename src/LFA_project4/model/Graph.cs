@@ -19,7 +19,7 @@ namespace LFA_project4.Model
             StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.AppendLine("-------");
-            stringBuilder.AppendLine($"Start Node: {GetStartNode().Value}");
+            stringBuilder.AppendLine($"Start Node: {GetStartNode()?.Value}");
             stringBuilder.AppendLine("-------");
             stringBuilder.AppendLine($"End Node(s): {String.Join(",", GetFinalNodes())}");
             stringBuilder.AppendLine("-------");
@@ -39,7 +39,7 @@ namespace LFA_project4.Model
 
         public Node GetStartNode()
         {
-            return Edges.First(q => q.NodeFrom.Start).NodeFrom;
+            return Edges.FirstOrDefault(q => q.NodeFrom.Start)?.NodeFrom;
         }
 
         public List<Node> GetAllNodes()
